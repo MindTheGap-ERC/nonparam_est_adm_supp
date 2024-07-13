@@ -22,9 +22,11 @@ Open the file `nonparam_est_adm_supp.Rproj` in RStudio. This will set all paths 
 
 * _code_ : folder for code
   * _analysis_steinbruch_schmidt.R_ : code for Steinbruch Schmidt example
+  * _analysis_site690.R_ : code for the PETM example
 * _data_ : folder for data
   * _raw_ : folder for raw data, for read only
-    * _SbS_XRF_forfactor3.csv_ : data for Steinbruch Schmidt example, from da Silva (2024)
+    * _SbS_XRF_forfactor3.csv_ : data for Steinbruch Schmidt example, from da Silva (2020, 2024)
+    * _Farley_and_Eltgroth_2003_supp_data_1_site690.csv_ : data for the PETM example, from Farley and Eltgroth (2003 a, b)
 * _figs_ : folder for figures
 * _.gitignore_ : untracked files
 * _LICENSE_ : Apache 2.0 license text
@@ -35,7 +37,12 @@ Open the file `nonparam_est_adm_supp.Rproj` in RStudio. This will set all paths 
 
 Data in `data/raw/SbS_XRF_forfactor3.csv` and parts of the code in `code/analysis_steinbruch_schmidt.R` are from
 
-* da Silva, A.-C. (2024). Anchoring the Late Devonian mass extinction in absolute time by integrating climatic controls and radio-isotopic dating: Supplementary code (v1.0.0). Zenodo. [DOI: 10.5281/zenodo.12516430](https://doi.org/10.5281/zenodo.12516430)
+* da Silva, A.-C. (2024). Anchoring the Late Devonian mass extinction in absolute time by integrating climatic controls and radio-isotopic dating: Supplementary code (v1.0.0). Zenodo. [DOI: 10.5281/zenodo.12516430](https://doi.org/10.5281/zenodo.12516430), In supplement to Da Silva, AC., Sinnesael, M., Claeys, P. et al. Anchoring the Late Devonian mass extinction in absolute time by integrating climatic controls and radio-isotopic dating. Sci Rep 10, 12940 (2020). [DOI: 10.1038/s41598-020-69097-6](https://doi.org/10.1038/s41598-020-69097-6)
+
+Data in `data/raw/Farley_and_Eltgroth_2003_supp_data_1_site690.csv`
+is from  
+
+* Farley, Kenneth A; Eltgroth, Selene F (2003): (Appendix 1) Helium isotopic ratios and sedimentation rate model of ODP Hole 113-690B [dataset]. PANGAEA, [DOI: 10.1594/PANGAEA.723907](https://doi.org/10.1594/PANGAEA.723907), In supplement to: Farley, KA; Eltgroth, SF (2003): An alternative age model for the Paleocene-Eocene thermal maximum using extraterrestrial 3He. Earth and Planetary Science Letters, 208(3-4), 135-148, [DOI: 10.1016/S0012-821X(03)00017-7](https://doi.org/10.1016/S0012-821X(03)00017-7)
 
 ## Copyright
 
