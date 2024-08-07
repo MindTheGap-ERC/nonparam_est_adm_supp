@@ -296,4 +296,25 @@ ket_sd= sd(df$dur)
 ket_quantile = quantile(df$dur)
 ket_iqr = IQR(df$dur)
 
-
+#### values of r^2_opt 
+col_354 = "black"
+col_156 = grey(0.6)
+png("figs/R2opt_vs_sedrate.png")
+fa2$heights
+plot(x = fa2$sed_rate,
+     y = fa2$results[,which(fa2$heights == 3.54)],
+     type = "l",
+     xlab = "Sedimentation rate [cm/kyr]",
+     ylab = "r^2_opt", 
+     lwd = 3,
+     col = col_354)
+lines(x = fa2$sed_rate,
+      y = fa2$results[,which(fa2$heights == 1.56)],
+      lwd = 3,
+      col = col_156)
+legend("topleft",
+       legend = c("3.54 m", "1.56 m"),
+       lwd = 3,
+       lty = 1,
+       col = c(col_354, col_156))
+dev.off()
