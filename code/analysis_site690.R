@@ -1,11 +1,4 @@
 #### install latest version of package ####
-if (FALSE){
-remotes::install_github(repo = "MindTheGap-ERC/admtools",
-                        build_vignettes = TRUE,
-                        ref = "dev",
-                        force = TRUE)
-
-}
 library(admtools)
 
 #### Set Seed ####
@@ -25,8 +18,8 @@ eps = 0.001 # lowest possible 3He flux value
 
 
 #### Constants for analysis ####
-no_of_rep = 1000
-subdivisions = 10000
+no_of_rep = 1000 # monte carlo iterations
+subdivisions = 10000 # subdivisions of numeric integration
 
 #### Load data & clean data ####
 # from https://doi.org/10.1594/PANGAEA.723912 , supplement to Farley and Eltgroth 2003
@@ -225,7 +218,8 @@ col_inc = "red"
 
 
 #### make adm plot ####
-adm_plot = function(){
+adm_plot = function(file_name){
+png(paste0("figs/", file_name, ".png"))
 const_med = quantile_adm(my_adm_const, h, 0.5)
 const_p1 = quantile_adm(my_adm_const, h, 0.975)
 const_p2 = quantile_adm(my_adm_const, h, 0.025)
@@ -272,10 +266,11 @@ xpos = -200
 text(x = xpos, y = mean(recovery_interval), "recovery interval", pos = 4)
 text(x = xpos, y = mean(main_interval), "main interval", pos = 4)
 text(x = xpos, y = mean(pre_interval), "pre interval", pos = 4)
+dev.off()
 }
 png("figs/site690_adm.png")
-adm_plot()
-dev.off()
+adm_plot("site690_adm")
+
 #### Sed rate plot ####
 
 median_sed_rate_l = function(x, h){
@@ -302,55 +297,12 @@ sedr_const =   100 * median_sed_rate_l(my_adm_const, h)
 sedr_inc =  100 * median_sed_rate_l(my_adm_inc, h)
 sedr_dec =  100 * median_sed_rate_l(my_adm_dec ,h)
 
-sed_rate_plot = function(){
-plot(NULL, 
-     xlim = range(h),
-     ylim = c(0, 1.1 * max(c(sedr_const, sedr_dec, sedr_inc))),
-     xlab = "Height [m]",
-     ylab = "Sedimentation rate [cm/kyr]")
-rect(ybottom = 0, ytop = 300, xleft = pre_interval[1], xright = pre_interval[2], col = "azure2")
-rect(ybottom = 0, ytop = 300, xleft = main_interval[1], xright = main_interval[2], col = "azure3")
-rect(ybottom = 0, ytop = 300, xleft = recovery_interval[1], xright = recovery_interval[2], col = "azure4")
-lines(h, sedr_const, col = col_const, lwd = med_lwd)
-lines(h, sedr_dec, col = col_dec, lwd = med_lwd)
-lines(h, sedr_inc, col = col_inc, lwd = med_lwd)
 
-legend("topleft",
-       lwd = med_lwd,
-       lty = med_lty,
-       col = c(col_const, col_dec, col_inc),
-       legend = c("constant flux", "decreasing flux", "increasing flux"))
-}
 
-png("figs/site690_sedrate.png")
-sed_rate_plot()
-dev.off()
-#### codensation plot ####
-make_cond_plot = function(){
-  plot(NULL,
-       xlim = range(h),
-       ylim = range(c(0,(1.1 * max(c(1/sedr_const, 1/sedr_dec, 1/sedr_inc))))),
-       xlab = "Height [m]",
-       ylab = "Condensation [kyr/cm]")
-  rect(ybottom = 0, ytop = 300, xleft = pre_interval[1], xright = pre_interval[2], col = "azure2")
-  rect(ybottom = 0, ytop = 300, xleft = main_interval[1], xright = main_interval[2], col = "azure3")
-  rect(ybottom = 0, ytop = 300, xleft = recovery_interval[1], xright = recovery_interval[2], col = "azure4")
-  lines(h, 1/sedr_const, col = col_const, lwd = med_lwd)
-  lines(h, 1/sedr_dec, col = col_dec, lwd = med_lwd)
-  lines(h, 1/sedr_inc, col = col_inc, lwd = med_lwd)
-  text(x = mean(pre_interval), y = 0.2, labels = "pre interval", srt = 90, pos = 3)
-  text(x = mean(main_interval), y = 0.2, labels = "main interval", srt = 90, pos = 3)
-  text(x = mean(recovery_interval),  y = 1, labels = "recovery interval", srt= 90, pos = 3)
-  legend("topleft",
-         lwd = med_lwd,
-         lty = med_lty,
-         col = c(col_const, col_dec, col_inc),
-         legend = c("constant flux", "decreasing flux", "increasing flux"))
-}
 
-png("figs/site690_condensation.png")
-make_cond_plot()
-dev.off()
+
+
+
 
 max_sedr = max(sedr_const, sedr_dec, sedr_inc)
 min_sedr = min(sedr_const, sedr_dec, sedr_inc)
@@ -408,3 +360,59 @@ quantile(rat_inc)
 quantile(rat_dec)
 quantile(rat_const)
 diff(recovery_interval)/diff(main_interval)
+
+
+
+
+#### codensation plot ####
+make_cond_plot = function(file_name){
+  png(paste0("figs/", file_name,".png"))
+  plot(NULL,
+       xlim = range(h),
+       ylim = range(c(0,(1.1 * max(c(1/sedr_const, 1/sedr_dec, 1/sedr_inc))))),
+       xlab = "Height [m]",
+       ylab = "Condensation [kyr/cm]")
+  rect(ybottom = 0, ytop = 300, xleft = pre_interval[1], xright = pre_interval[2], col = "azure2")
+  rect(ybottom = 0, ytop = 300, xleft = main_interval[1], xright = main_interval[2], col = "azure3")
+  rect(ybottom = 0, ytop = 300, xleft = recovery_interval[1], xright = recovery_interval[2], col = "azure4")
+  lines(h, 1/sedr_const, col = col_const, lwd = med_lwd)
+  lines(h, 1/sedr_dec, col = col_dec, lwd = med_lwd)
+  lines(h, 1/sedr_inc, col = col_inc, lwd = med_lwd)
+  text(x = mean(pre_interval), y = 0.2, labels = "pre interval", srt = 90, pos = 3)
+  text(x = mean(main_interval), y = 0.2, labels = "main interval", srt = 90, pos = 3)
+  text(x = mean(recovery_interval),  y = 1, labels = "recovery interval", srt= 90, pos = 3)
+  legend("topleft",
+         lwd = med_lwd,
+         lty = med_lty,
+         col = c(col_const, col_dec, col_inc),
+         legend = c("constant flux", "decreasing flux", "increasing flux"))
+  dev.off()
+}
+
+make_cond_plot("site690_condensation")
+
+#### sedimentation rate plot ####
+
+sed_rate_plot = function(file_name){
+  png(paste0("figs/", file_name, ".png"))
+  plot(NULL, 
+       xlim = range(h),
+       ylim = c(0, 1.1 * max(c(sedr_const, sedr_dec, sedr_inc))),
+       xlab = "Height [m]",
+       ylab = "Sedimentation rate [cm/kyr]")
+  rect(ybottom = 0, ytop = 300, xleft = pre_interval[1], xright = pre_interval[2], col = "azure2")
+  rect(ybottom = 0, ytop = 300, xleft = main_interval[1], xright = main_interval[2], col = "azure3")
+  rect(ybottom = 0, ytop = 300, xleft = recovery_interval[1], xright = recovery_interval[2], col = "azure4")
+  lines(h, sedr_const, col = col_const, lwd = med_lwd)
+  lines(h, sedr_dec, col = col_dec, lwd = med_lwd)
+  lines(h, sedr_inc, col = col_inc, lwd = med_lwd)
+  
+  legend("topleft",
+         lwd = med_lwd,
+         lty = med_lty,
+         col = c(col_const, col_dec, col_inc),
+         legend = c("constant flux", "decreasing flux", "increasing flux"))
+  dev.off()
+}
+
+sed_rate_plot("site690_sedrate")
