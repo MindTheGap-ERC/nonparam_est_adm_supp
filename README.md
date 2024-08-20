@@ -1,6 +1,6 @@
 # Intro
 
-Supplementary data and code for "Nonparametric estimation of age-depth models from sedimentological and stratigraphic data".
+Supplementary data and code for "Nonparametric estimation of age-depth models from sedimentological and stratigraphic information".
 
 ## Authors
 
@@ -16,7 +16,15 @@ Base R (version >= 4) and the RStudion IDE.
 
 ## Usage
 
-Open the file `nonparam_est_adm_supp.Rproj` in RStudio. This will set all paths correctly. Then you can inspect and run the code in the folders.
+Open the file `nonparam_est_adm_supp.Rproj` in RStudio. This will set all paths correctly, and intall the `renv` package if necessary. The run
+
+```R
+renv::restore()
+```
+
+to install all dependencies required for the analyses. 
+
+Then you can inspect and run the code in the folders.
 
 ## Repository structure
 
@@ -24,14 +32,17 @@ Open the file `nonparam_est_adm_supp.Rproj` in RStudio. This will set all paths 
   * _analysis_steinbruch_schmidt.R_ : code for Steinbruch Schmidt example
   * _analysis_site690.R_ : code for the PETM example
 * _data_ : folder for data
-  * _raw_ : folder for raw data, for read only
+  * _raw_ : folder for raw data, read only!
     * _SbS_XRF_forfactor3.csv_ : data for Steinbruch Schmidt example, from da Silva (2020, 2024)
     * _Farley_and_Eltgroth_2003_supp_data_1_site690.csv_ : data for the PETM example, from Farley and Eltgroth (2003 a, b)
 * _figs_ : folder for figures
+* _renv_ : folder for `renv` package
 * _.gitignore_ : untracked files
+* _.Rprofile_ : R session settings
 * _LICENSE_ : Apache 2.0 license text
 * _nonparam_est_adm_supp.Rproj_ : R project file
 * _README_ : Readme file
+* _renv.lock_ : lock file of the `renv` package
 
 ## References
 
@@ -50,7 +61,7 @@ Copyright 2023-2024 Netherlands eScience Center and Utrecht University.
 
 ## License
 
-Apache 2.0 License, see LICENSE file for license text.
+Apache 2.0 License, see LICENSE file for full license text.
 
 ## Funding information
 

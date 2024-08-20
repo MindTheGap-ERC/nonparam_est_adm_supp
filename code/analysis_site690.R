@@ -1,4 +1,5 @@
-#### install latest version of package ####
+## load package ##
+library(ggplot2)
 library(admtools)
 
 #### Set Seed ####
@@ -23,7 +24,7 @@ subdivisions = 10000 # subdivisions of numeric integration
 
 #### Load data & clean data ####
 # from https://doi.org/10.1594/PANGAEA.723912 , supplement to Farley and Eltgroth 2003
-data = read.csv(file = "data/Farley_and_Eltgroth_2003_supp_data_1_site690.csv", header = TRUE, sep = ";")
+data = read.csv(file = "data/raw/Farley_and_Eltgroth_2003_supp_data_1_site690.csv", header = TRUE, sep = ";")
 
 # Exclude section 19H-5W-108-109 bc it has thickness 0
 data = data[!data$core.section == "19H-5W-108-109",  ] 
@@ -163,47 +164,27 @@ my_adm_dec = strat_cont_to_multiadm(h_tp = h_tp,
                                     T_unit = NULL,
                                     L_unit = "m")
 
-#### Duration PETM ####
+cat("Creating plots for site 690 /n")
+
+#### Condensation recovery interval to main interval ####
 # main interval
 dur_main_const =  - sapply(get_time(my_adm_const, h = main_interval), diff)
 dur_main_dec =  - sapply(get_time(my_adm_dec, main_interval), diff)
 dur_main_inc =  - sapply(get_time(my_adm_inc, main_interval), diff)
-
-quantile(dur_main_inc)
-quantile(dur_main_const)
-quantile(dur_main_dec)
-
-IQR(dur_main_inc)
-IQR(dur_main_const)
-IQR(dur_main_dec)
 # recovery
 dur_rec_const =  - sapply(get_time(my_adm_const, recovery_interval), diff)
 dur_rec_inc = -  sapply(get_time(my_adm_inc, recovery_interval), diff)
 dur_rec_dec =  - sapply(get_time(my_adm_dec, recovery_interval), diff)
 
-quantile(dur_rec_inc)
-quantile(dur_rec_const)
-quantile(dur_rec_dec)
-
-IQR(dur_rec_inc)
-IQR(dur_rec_const)
-IQR(dur_rec_inc)
-# pre interval
-dur_pre_const = -sapply(get_time(my_adm_const, pre_interval), diff)
-dur_pre_dec = -sapply(get_time(my_adm_dec, pre_interval), diff)
-dur_pre_inc = -sapply(get_time(my_adm_inc, pre_interval), diff)
-
 # ratio main interval to recovery
-thickness_ratio = diff(recovery_interval)/ diff(main_interval)
 time_ratio_const = dur_rec_const / dur_main_const
 time_ratio_inc = dur_rec_inc / dur_main_inc
 time_ratio_dec = dur_rec_dec / dur_main_dec
 
-med_ratio_const = 100 * (1 - median(time_ratio_const))
-med_ratio_inc = 100 * (1 - median(time_ratio_inc))
-med_ratio_dec = 100 * (1 - median(time_ratio_dec))
-
-dur_total_const =  sapply(get_time(my_adm_const, range(c(recovery_interval, main_interval, pre_interval))), diff)
+interval_cond_stats = list("thickness_ratio" = diff(recovery_interval)/ diff(main_interval),
+                           "med_ratio_const" = 100 * (1 - median(time_ratio_const)),
+                           "med_ratio_inc" = 100 * (1 - median(time_ratio_inc)),
+                           "med_ratio_dec" = 100 * (1 - median(time_ratio_dec)))
 
 #### Plotting ####
 med_lty = 1
@@ -268,10 +249,11 @@ text(x = xpos, y = mean(main_interval), "main interval", pos = 4)
 text(x = xpos, y = mean(pre_interval), "pre interval", pos = 4)
 dev.off()
 }
-png("figs/site690_adm.png")
+
 adm_plot("site690_adm")
 
-#### Sed rate plot ####
+
+#### Determine sedimentatio rate ####
 
 median_sed_rate_l = function(x, h){
   #' @title get median sed rate from multiadm
@@ -297,122 +279,188 @@ sedr_const =   100 * median_sed_rate_l(my_adm_const, h)
 sedr_inc =  100 * median_sed_rate_l(my_adm_inc, h)
 sedr_dec =  100 * median_sed_rate_l(my_adm_dec ,h)
 
+sedr_stats = list("sedr_range_const"= range(sedr_const),
+                  "sedr_range_inc" = range(sedr_inc),
+                  "sedr_range_dec" = range(sedr_dec),
+                  "sedr_fac_const" = max(sedr_const)/ min(sedr_const),
+                  "sedr_fac_ind" = max(sedr_inc)/ min(sedr_inc),
+                  "sedr_fac_dec" = max(sedr_dec)/ min(sedr_dec),
+                  "cond_range_const" = range(1/sedr_const),
+                  "cond_range_inc" = range(1/sedr_inc),
+                  "cond_range_dec" = range(1/sedr_dec))
 
+#### Global plotting options ####
 
-
-
-
-
-
-max_sedr = max(sedr_const, sedr_dec, sedr_inc)
-min_sedr = min(sedr_const, sedr_dec, sedr_inc)
-sedr_fact = max_sedr / min_sedr
-
-sedr_range_const = range(sedr_const)
-sedr_range_inc = range(sedr_inc)
-sedr_range_dec = range(sedr_dec)
-
-sedr_range_const[2]/ sedr_range_const[1]
-sedr_range_dec[2]/ sedr_range_dec[1]
-sedr_range_inc[2]/ sedr_range_inc[1]
-
-range(1/sedr_inc)
-
-#### Duration PETM ####
-library(ggplot2)
-
-h_int = unique(c(recovery_interval, main_interval)) # stratigraphic boundaries of main and recovery interval
-
-l = get_time(my_adm_const, h_int)
-diff_const = lapply(l, function(x) diff(x))
-rat_const = sapply(diff_const, function(x) x[1]/x[2])
-
-l = get_time(my_adm_inc, h_int)
-diff_inc = lapply(l, function(x) diff(x))
-rat_inc = sapply(diff_inc, function(x) x[1]/x[2])
-
-l = get_time(my_adm_dec, h_int)
-diff_dec = lapply(l, function(x) diff(x))
-rat_dec = sapply(diff_dec, function(x) x[1]/x[2])
-
-dur_const = -sapply(diff_const, function(x) x[2])
-dur_inc = -sapply(diff_inc, function(x) x[2])
-dur_dec = -sapply(diff_dec, function(x) x[2])
-
-data = data.frame(type = c(rep("const", length(dur_const)), rep("dec", length(dur_dec)), rep("inc", length(dur_inc))),
-                  value = c(dur_const, dur_dec, dur_inc))
-
-ggplot(data, aes(x = value, fill = type )) +
-  geom_density() + 
-  xlab("Duration [kyr]") +
-  ylab("Density") +
-  ggtitle("Duration of PETM main event") 
-
-quantile(dur_const)
-quantile(dur_dec)
-quantile(dur_inc)
-
-median(dur_inc) / median(dur_const)
-median(dur_dec) / median(dur_const)
-
-
-quantile(rat_inc)
-quantile(rat_dec)
-quantile(rat_const)
-diff(recovery_interval)/diff(main_interval)
-
-
-
-
-#### codensation plot ####
-make_cond_plot = function(file_name){
-  png(paste0("figs/", file_name,".png"))
-  plot(NULL,
-       xlim = range(h),
-       ylim = range(c(0,(1.1 * max(c(1/sedr_const, 1/sedr_dec, 1/sedr_inc))))),
-       xlab = "Height [m]",
-       ylab = "Condensation [kyr/cm]")
-  rect(ybottom = 0, ytop = 300, xleft = pre_interval[1], xright = pre_interval[2], col = "azure2")
-  rect(ybottom = 0, ytop = 300, xleft = main_interval[1], xright = main_interval[2], col = "azure3")
-  rect(ybottom = 0, ytop = 300, xleft = recovery_interval[1], xright = recovery_interval[2], col = "azure4")
-  lines(h, 1/sedr_const, col = col_const, lwd = med_lwd)
-  lines(h, 1/sedr_dec, col = col_dec, lwd = med_lwd)
-  lines(h, 1/sedr_inc, col = col_inc, lwd = med_lwd)
-  text(x = mean(pre_interval), y = 0.2, labels = "pre interval", srt = 90, pos = 3)
-  text(x = mean(main_interval), y = 0.2, labels = "main interval", srt = 90, pos = 3)
-  text(x = mean(recovery_interval),  y = 1, labels = "recovery interval", srt= 90, pos = 3)
-  legend("topleft",
-         lwd = med_lwd,
-         lty = med_lty,
-         col = c(col_const, col_dec, col_inc),
-         legend = c("constant flux", "decreasing flux", "increasing flux"))
-  dev.off()
-}
-
-make_cond_plot("site690_condensation")
+const_fl_col = "red"
+inc_fl_col = "blue"
+dec_fl_col = "black"
+pre_col = "azure2"
+main_col = "azure3"
+rec_col = "azure4"
+box_cols = c(pre_col, main_col, rec_col)
+scenario_cols = c(const_fl_col, inc_fl_col, dec_fl_col)
 
 #### sedimentation rate plot ####
-
 sed_rate_plot = function(file_name){
-  png(paste0("figs/", file_name, ".png"))
-  plot(NULL, 
-       xlim = range(h),
-       ylim = c(0, 1.1 * max(c(sedr_const, sedr_dec, sedr_inc))),
-       xlab = "Height [m]",
-       ylab = "Sedimentation rate [cm/kyr]")
-  rect(ybottom = 0, ytop = 300, xleft = pre_interval[1], xright = pre_interval[2], col = "azure2")
-  rect(ybottom = 0, ytop = 300, xleft = main_interval[1], xright = main_interval[2], col = "azure3")
-  rect(ybottom = 0, ytop = 300, xleft = recovery_interval[1], xright = recovery_interval[2], col = "azure4")
-  lines(h, sedr_const, col = col_const, lwd = med_lwd)
-  lines(h, sedr_dec, col = col_dec, lwd = med_lwd)
-  lines(h, sedr_inc, col = col_inc, lwd = med_lwd)
+  df = data.frame(h = rep(h, 3), sedr = c(sedr_const, sedr_dec, sedr_inc),
+                  Scenario = c(rep("Constant flux", length(sedr_const)),rep("Increasing flux", length(sedr_inc)), rep("Decreasing flux", length(sedr_dec))))
+  m_sedr = max(df$sedr)
   
-  legend("topleft",
-         lwd = med_lwd,
-         lty = med_lty,
-         col = c(col_const, col_dec, col_inc),
-         legend = c("constant flux", "decreasing flux", "increasing flux"))
-  dev.off()
+  rect = data.frame(h_min = c(pre_interval[1], main_interval[1], recovery_interval[1]),
+                    h_max = c(pre_interval[2], main_interval[2], recovery_interval[2]),
+                    ymax = rep(m_sedr, 3),
+                    ymin = rep(0, 3))
+  ggplot(df, aes(x = h, y = sedr, group = Scenario, col = Scenario)) +
+    ylim(c(0, m_sedr)) +
+    geom_rect(data = rect, inherit.aes = FALSE, aes(xmin = h_min, xmax = h_max, ymin = ymin, ymax = ymax), fill = box_cols) +
+    scale_color_manual(values = scenario_cols) +
+    geom_line(size = 1, alpha = 0.7) +
+    xlab("Height [m]") +
+    ylab("Sedimentation Rate [cm/kyr]") 
+ ggsave(paste0("figs/",file_name, ".png"))
 }
 
 sed_rate_plot("site690_sedrate")
+
+#### Condensation plot ####
+
+condensation_plot = function(file_name){
+  df = data.frame(h = rep(h, 3), cond = c(1/sedr_const, 1/sedr_dec, 1/sedr_inc),
+                  Scenario = c(rep("Constant flux", length(sedr_const)),rep("Increasing flux", length(sedr_inc)), rep("Decreasing flux", length(sedr_dec))))
+  m_cond = max(df$cond)
+  
+  rect = data.frame(h_min = c(pre_interval[1], main_interval[1], recovery_interval[1]),
+                    h_max = c(pre_interval[2], main_interval[2], recovery_interval[2]),
+                    ymax = rep(m_cond, 3),
+                    ymin = rep(0, 3))
+  ggplot(df, aes(x = h, y = cond, group = Scenario, col = Scenario)) +
+    ylim(c(0, m_cond)) +
+    geom_rect(data = rect, inherit.aes = FALSE, aes(xmin = h_min, xmax = h_max, ymin = ymin, ymax = ymax), fill = box_cols) +
+    scale_color_manual(values = scenario_cols) +
+    geom_line(size = 1, alpha = 0.7) +
+    xlab("Height [m]") +
+    ylab("Condensation [kyr/cm]") 
+  ggsave(paste0("figs/",file_name, ".png"))
+}
+
+condensation_plot("site690_condensation")
+
+#### Duration PETM main interval ####
+  
+h_int = main_interval
+
+diff_const = sapply(admtools::get_time(my_adm_const, h_int), function(x) diff(x))
+diff_inc = sapply(admtools::get_time(my_adm_inc, h_int), function(x) diff(x))
+diff_dec = sapply(admtools::get_time(my_adm_dec, h_int), function(x) diff(x))
+
+petm_main_duration_plot = function(file_name){
+  df = data.frame(dur = -1 * c(diff_const, diff_inc, diff_dec),
+                  Scenario = c(rep("Constant flux", length(diff_const)), rep("Increasing flux", length(diff_inc)), rep("Decreasing flux", length(diff_dec))) )
+  ggplot(df, aes(x = dur, fill = Scenario)) +
+    geom_density(alpha = 0.5) +
+    xlab("Duration [kyr]") +
+    ylab("Density") +
+    ggtitle("Duration of PETM main interval")
+  ggsave(paste0("figs/", file_name ,".png"))
+}
+petm_main_duration_plot("PETM_main_duration")
+
+petm_main_stats = function(){
+  return(list("med_duration_const" = median(-diff_const),
+              "med_duration_inc" = median(-diff_inc),
+              "med_duration_dec" = median(-diff_dec),
+              "iqr_duration_const" = IQR(-diff_const),
+              "iqr_duration_const" = IQR(-diff_inc),
+              "iqr_duration_const" = IQR(-diff_dec)
+              ))
+}
+petm_main_stats = petm_main_stats()
+
+#### Duration of PETM recovery interval
+
+h_int = recovery_interval
+
+diff_const = sapply(admtools::get_time(my_adm_const, h_int), function(x) diff(x))
+diff_inc = sapply(admtools::get_time(my_adm_inc, h_int), function(x) diff(x))
+diff_dec = sapply(admtools::get_time(my_adm_dec, h_int), function(x) diff(x))
+
+petm_main_duration_plot = function(file_name){
+  df = data.frame(dur = -1 * c(diff_const, diff_inc, diff_dec),
+                  Scenario = c(rep("Constant flux", length(diff_const)), rep("Increasing flux", length(diff_inc)), rep("Decreasing flux", length(diff_dec))) )
+  ggplot(df, aes(x = dur, fill = Scenario)) +
+    geom_density(alpha = 0.5) +
+    xlab("Duration [kyr]") +
+    ylab("Density") +
+    ggtitle("Duration of PETM recovery interval")
+  ggsave(paste0("figs/", file_name ,".png"))
+}
+petm_main_duration_plot("PETM_recovery_interval_duration")
+
+petm_recovery_stats = function(){
+  return(list("med_duration_const" = median(-diff_const),
+              "med_duration_inc" = median(-diff_inc),
+              "med_duration_dec" = median(-diff_dec),
+              "iqr_duration_const" = IQR(-diff_const),
+              "iqr_duration_const" = IQR(-diff_inc),
+              "iqr_duration_const" = IQR(-diff_dec)
+  ))
+}
+petm_recovery_stats = petm_recovery_stats()
+
+#### Plot ADMs ####
+
+const_med = quantile_adm(my_adm_const, h, 0.5)
+const_p1 = quantile_adm(my_adm_const, h, 0.975)
+const_p2 = quantile_adm(my_adm_const, h, 0.025)
+
+inc_med = quantile_adm(my_adm_inc, h, 0.5)
+inc_p1 = quantile_adm(my_adm_inc, h, 0.975)
+inc_p2 = quantile_adm(my_adm_inc, h, 0.025)
+
+dec_med = quantile_adm(my_adm_dec, h, 0.5)
+dec_p1 = quantile_adm(my_adm_dec, h, 0.975)
+dec_p2 = quantile_adm(my_adm_dec, h, 0.025)
+
+df = data.frame(he = rep(h, 9),
+                val = c(const_med$t, const_p1$t, const_p2$t, inc_med$t, inc_p1$t, inc_p2$t, dec_med$t, dec_p1$t, dec_p2$t),
+                #Scenario = c(rep("Constant flux", 3 * length(const_med)), rep("Increasing flux", 3 * length(inc_med)), rep("Decreasing flux", 3 * length(dec_med))),
+                Type = rep(LETTERS[1:9], each = 100))
+
+ggplot(df, aes(x = he, y = val, color = Type, group = Type)) +
+  geom_line(aes(linetype=Type)) + 
+    scale_color_manual(values = rep(scenario_cols, each = 3))
+
+plot(NULL,
+     xlim = c(-200, 200),
+     ylim = range(h),
+     xlab = "time since beginning of PETM main event [kyr]",
+     ylab = "stratigraphic position [m]")
+
+
+rect(xleft = -1000, xright = 1000, ytop = pre_interval[1], ybottom = pre_interval[2], col = "azure2", border = NA)
+rect(xleft = -1000, xright = 1000, ytop = main_interval[1], ybottom = main_interval[2], col = "azure3", border = NA)
+rect(xleft = -1000, xright = 1000, ytop = recovery_interval[1], ybottom = recovery_interval[2], col = "azure4", border = NA)
+
+lines(const_med$t, const_med$h, col = col_const, lwd = med_lwd, lty = med_lty)
+lines(const_p1$t, const_p1$h, col = col_const, lwd = env_lwd, lty = env_lty)
+lines(const_p2$t, const_p2$h, col = col_const, lwd = env_lwd, lty = env_lty)
+
+lines(dec_med$t, dec_med$h, col = col_dec, lwd = med_lwd, lty = med_lty)
+lines(dec_p1$t, dec_p1$h, col = col_dec, lwd = env_lwd, lty = env_lty)
+lines(dec_p2$t, dec_p2$h, col = col_dec, lwd = env_lwd, lty = env_lty)
+
+lines(inc_med$t, inc_med$h, col = col_inc, lwd = med_lwd, lty = med_lty)
+lines(inc_p1$t, inc_p1$h, col = col_inc, lwd = env_lwd, lty = env_lty)
+lines(inc_p2$t, inc_p2$h, col = col_inc, lwd = env_lwd, lty = env_lty)
+
+points(0, min(main_interval), cex = 1.5, pch = 16)
+
+legend("topleft",
+       col = c(col_const, col_inc, col_dec),
+       legend = c("Constant flux", "Increasing flux", "Decreasing flux"),
+       lwd = med_lwd,
+       lty = med_lty)
+xpos = -200
+text(x = xpos, y = mean(recovery_interval), "recovery interval", pos = 4)
+text(x = xpos, y = mean(main_interval), "main interval", pos = 4)
+text(x = xpos, y = mean(pre_interval), "pre interval", pos = 4)
