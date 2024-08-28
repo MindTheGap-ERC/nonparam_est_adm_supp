@@ -2,14 +2,6 @@
 library(ggplot2)
 library(admtools)
 
-## install latest version 
-if(FALSE){
-  remotes::install_github(repo = "MindTheGap-ERC/admtools",
-                          build_vignettes = TRUE,
-                          ref = "HEAD",
-                          dependencies = TRUE)
-  
-}
 
 #### Set Seed ####
 set.seed(42)

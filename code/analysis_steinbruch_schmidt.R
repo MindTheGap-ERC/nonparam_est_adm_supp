@@ -97,11 +97,13 @@ fa_prec = admtools::get_data_from_eTimeOpt(etimeOptMS_prec, index = 3)
 se_prec = admtools::sed_rate_from_matrix(height = fa_prec$heights,
                                sedrate = fa_prec$sed_rate / 100, # convert cm/kyr to m/kyr
                                matrix = fa_prec$results,
+                               mode = "poisson",
                                rate = rate)
 fa_secc = admtools::get_data_from_eTimeOpt(etimeOptMS_secc, index = 3)
 se_secc = admtools::sed_rate_from_matrix(height = fa_secc$heights,
                                sedrate = fa_secc$sed_rate / 100, # convert cm/kyr to m/kyr
                                matrix = fa_secc$results,
+                               mode = "poisson",
                                rate = rate)
 
 # heights of interest
@@ -352,7 +354,8 @@ time_between_ke_stats = function(adm){
   return(list("mean" = mean(l),
               "median" = median(l),
               "iqr" = IQR(l),
-              "quantile" = quantile(l)))
+              "quantile" = quantile(l),
+              "sd" = sd(l)))
 }
 
 time_ke_stats = time_between_ke_stats(adm_prec_abs)

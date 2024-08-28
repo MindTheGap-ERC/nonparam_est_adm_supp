@@ -22,20 +22,27 @@ Open the file `nonparam_est_adm_supp.Rproj` in RStudio. This will set all paths 
 renv::restore()
 ```
 
-to install all dependencies required for the analyses. 
+to install all dependencies required for the analyses.
 
-Then you can inspect and run the code in the folders.
+To reproduce the results, run
+
+```R
+source("code/analyses.R)
+```
+
+in the RStudio console. This will run both analyses (site 690 and Steinbruch Schmidt), and generate all figues in the `figs/` folder.
 
 ## Repository structure
 
 * _code_ : folder for code
   * _analysis_steinbruch_schmidt.R_ : code for Steinbruch Schmidt example
   * _analysis_site690.R_ : code for the PETM example
+  * _analyses.R_ : runs both examples
 * _data_ : folder for data
   * _raw_ : folder for raw data, read only!
     * _SbS_XRF_forfactor3.csv_ : data for Steinbruch Schmidt example, from da Silva (2020, 2024)
     * _Farley_and_Eltgroth_2003_supp_data_1_site690.csv_ : data for the PETM example, from Farley and Eltgroth (2003 a, b)
-* _figs_ : folder for figures
+* _figs_ : folder for figures. Initially empty, filled once `code/analyses.R` is run
 * _renv_ : folder for `renv` package
 * _.gitignore_ : untracked files
 * _.Rprofile_ : R session settings
