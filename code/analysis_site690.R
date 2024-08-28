@@ -66,21 +66,23 @@ He_uncert = approxfun(x = binborders,
                       rule = 2,
                       f = 0,
                       method = "constant")
+if (FALSE) { # plotting of tracer values
+  plot(NULL,
+       xlim = c(min(data$mbsf_m), max_obs),
+       ylim = c(0, max(data$ex_3He_pcc_p_m) + max(data$ex_3He_pcc_p_m_uncert)),
+       xlab = "Depth below sediment surface [m]",
+       ylab = "ext. 3He [ppc / m]")
+  h = seq(min(data$mbsf_m), max(data$mbsf_m), length.out = 10000)
+  rect(ybottom = 0, ytop = 300, xleft = pre_interval[1], xright = pre_interval[2], col = "azure2")
+  rect(ybottom = 0, ytop = 300, xleft = main_interval[1], xright = main_interval[2], col = "azure3")
+  rect(ybottom = 0, ytop = 300, xleft = recovery_interval[1], xright = recovery_interval[2], col = "azure4")
+  lines(h, He(h) + He_uncert(h), col = "red")
+  lines(h, He(h) - He_uncert(h), col = "red")
+  lines(h, He(h), col = "blue" )
+  
+  legend("topleft", lwd = 1, lty = 1, col = c("red", "blue"), legend = c("+/- 1 sd", "Mean"))
+}
 
-plot(NULL,
-     xlim = c(min(data$mbsf_m), max_obs),
-     ylim = c(0, max(data$ex_3He_pcc_p_m) + max(data$ex_3He_pcc_p_m_uncert)),
-     xlab = "Depth below sediment surface [m]",
-     ylab = "ext. 3He [ppc / m]")
-h = seq(min(data$mbsf_m), max(data$mbsf_m), length.out = 10000)
-rect(ybottom = 0, ytop = 300, xleft = pre_interval[1], xright = pre_interval[2], col = "azure2")
-rect(ybottom = 0, ytop = 300, xleft = main_interval[1], xright = main_interval[2], col = "azure3")
-rect(ybottom = 0, ytop = 300, xleft = recovery_interval[1], xright = recovery_interval[2], col = "azure4")
-lines(h, He(h) + He_uncert(h), col = "red")
-lines(h, He(h) - He_uncert(h), col = "red")
-lines(h, He(h), col = "blue" )
-
-legend("topleft", lwd = 1, lty = 1, col = c("red", "blue"), legend = c("+/- 1 sd", "Mean"))
 
 #### Estimate ADMs #### 
 
@@ -244,7 +246,9 @@ plot_adm_site_690 = function(file_name){
     annotate("text", x = mean(c(t_min, t_max)) - 150, y = mean(-recovery_interval), label = "recovery interval") +
     annotate("text", x = mean(c(t_min, t_max)) - 150, y = mean(-main_interval), label = "main interval") +
     annotate("text", x = mean(c(t_min, t_max)) - 150, y = mean(-pre_interval), label = "precursor interval") +
-    ggtitle("Age-depth models for ODP Site 690") 
+    ggtitle("Age-depth models for ODP Site 690") +
+    theme(legend.position = "inside",
+          legend.position.inside = c(0.1, 0.9))
     ggsave(paste0("figs/", file_name, ".png"))
 }
 
@@ -289,14 +293,14 @@ sedr_stats = list("sedr_range_const"= range(sedr_const),
 #### sedimentation rate plot ####
 sed_rate_plot = function(file_name){
   df = data.frame(h = rep(-h, 3), sedr = c(sedr_const, sedr_dec, sedr_inc),
-                  Scenario = c(rep("Constant flux", length(sedr_const)),rep("Increasing flux", length(sedr_inc)), rep("Decreasing flux", length(sedr_dec))))
+                  Scenario = c(rep("Constant flux", length(sedr_const)),rep("Decreasing flux", length(sedr_inc)), rep("Increasing flux", length(sedr_dec))))
   m_sedr = max(df$sedr)
   
   rect = data.frame(h_min = -c(pre_interval[1], main_interval[1], recovery_interval[1]),
                     h_max = -c(pre_interval[2], main_interval[2], recovery_interval[2]),
                     ymax = rep(m_sedr, 3),
                     ymin = rep(0, 3))
-  ggplot(df, aes(x = h, y = sedr, group = Scenario, col = Scenario)) +
+  plt = ggplot(df, aes(x = h, y = sedr, group = Scenario, col = Scenario)) +
     ylim(c(0, m_sedr)) +
     geom_rect(data = rect, inherit.aes = FALSE, aes(xmin = h_min, xmax = h_max, ymin = ymin, ymax = ymax), fill = box_cols) +
     scale_color_manual(values = scenario_cols) +
@@ -306,24 +310,28 @@ sed_rate_plot = function(file_name){
     scale_x_reverse() +
     annotate("text", x = - mean(main_interval), y = 10, label = "main interval", angle = 90)  +
     annotate("text", x =  168, y = 3, label = "recovery interval", angle = 90) +
-    annotate("text", x = - mean(pre_interval), y = 10, label = "precursor interval", angle = 90)
-  ggsave(paste0("figs/",file_name, ".png"))
+    annotate("text", x = - mean(pre_interval), y = 10, label = "precursor interval", angle = 90) +
+    theme(legend.position = "inside",
+          legend.position.inside = c(0.1, 0.9)) +
+    ggtitle("Sedimentation rate")
+  ggsave(paste0("figs/",file_name, ".png"), plot = plt)
+  return(plt)
 }
 
-sed_rate_plot("site690_sedrate")
+sedr_plot = sed_rate_plot("site690_sedrate")
 
 #### Condensation plot ####
 
 condensation_plot = function(file_name){
   df = data.frame(h = rep(-h, 3), cond = c(1/sedr_const, 1/sedr_dec, 1/sedr_inc),
-                  Scenario = c(rep("Constant flux", length(sedr_const)),rep("Increasing flux", length(sedr_inc)), rep("Decreasing flux", length(sedr_dec))))
+                  Scenario = c(rep("Constant flux", length(sedr_const)),rep("Decreasing flux", length(sedr_inc)), rep("Increasing flux", length(sedr_dec))))
   m_cond = max(df$cond)
   
   rect = data.frame(h_min = -c(pre_interval[1], main_interval[1], recovery_interval[1]),
                     h_max = -c(pre_interval[2], main_interval[2], recovery_interval[2]),
                     ymax = rep(m_cond, 3),
                     ymin = rep(0, 3))
-  ggplot(df, aes(x = h, y = cond, group = Scenario, col = Scenario)) +
+  plt = ggplot(df, aes(x = h, y = cond, group = Scenario, col = Scenario)) +
     ylim(c(0, m_cond)) +
     geom_rect(data = rect, inherit.aes = FALSE, aes(xmin = h_min, xmax = h_max, ymin = ymin, ymax = ymax), fill = box_cols) +
     scale_color_manual(values = scenario_cols) +
@@ -333,12 +341,21 @@ condensation_plot = function(file_name){
     scale_x_reverse() +
     annotate("text", x = - mean(main_interval), y = 0.2, label = "main interval", angle = 90)  +
     annotate("text", x =  -mean(recovery_interval), y = 1, label = "recovery interval", angle = 90) +
-    annotate("text", x = - mean(pre_interval), y = 0.2, label = "precursor interval", angle = 90)
-  ggsave(paste0("figs/",file_name, ".png"))
+    annotate("text", x = - mean(pre_interval), y = 0.2, label = "precursor interval", angle = 90) +
+    theme(legend.position = "inside",
+          legend.position.inside = c(0.8, 0.9)) +
+    ggtitle("Condensation")
+  ggsave(paste0("figs/",file_name, ".png"), plot = plt)
+  return(plt)
 }
 
-condensation_plot("site690_condensation")
+cond_plot = condensation_plot("site690_condensation")
 
+#### JOin plot of sedimentation and condensation
+
+plt = egg::ggarrange(sedr_plot, cond_plot, nrow = 1, ncol = 2, labels = LETTERS[1:2])
+
+ggsave("figs/site690_join_sedrate_cond.png", plot = plt)
 
 #### Duration PETM main interval ####
 petm_main_duration_plot = function(file_name){
@@ -350,14 +367,17 @@ petm_main_duration_plot = function(file_name){
   
   df = data.frame(dur = -1 * c(diff_const, diff_inc, diff_dec),
                   Scenario = c(rep("Constant flux", length(diff_const)), rep("Increasing flux", length(diff_inc)), rep("Decreasing flux", length(diff_dec))) )
-  ggplot(df, aes(x = dur, fill = Scenario)) +
+  plt = ggplot(df, aes(x = dur, fill = Scenario)) +
     geom_density(alpha = 0.5) +
     xlab("Duration [kyr]") +
     ylab("Density") +
-    ggtitle("Duration of PETM main interval")
-  ggsave(paste0("figs/", file_name ,".png"))
+    ggtitle("Duration of PETM main interval") +
+    theme(legend.position = "inside",
+          legend.position.inside = c(0.9, 0.9))
+  ggsave(paste0("figs/", file_name ,".png"), plot = plt)
+  return(plt)
 }
-petm_main_duration_plot("site690_PETM_main_interval_duration")
+petm_dur_plot1 = petm_main_duration_plot("site690_PETM_main_interval_duration")
 
 petm_main_stats = function(){
   h_int = main_interval
@@ -386,14 +406,17 @@ petm_recovery_duration_plot = function(file_name){
   
   df = data.frame(dur = -1 * c(diff_const, diff_inc, diff_dec),
                   Scenario = c(rep("Constant flux", length(diff_const)), rep("Increasing flux", length(diff_inc)), rep("Decreasing flux", length(diff_dec))) )
-  ggplot(df, aes(x = dur, fill = Scenario)) +
+  plt = ggplot(df, aes(x = dur, fill = Scenario)) +
     geom_density(alpha = 0.5) +
     xlab("Duration [kyr]") +
     ylab("Density") +
-    ggtitle("Duration of PETM recovery interval")
-  ggsave(paste0("figs/", file_name ,".png"))
+    ggtitle("Duration of PETM recovery interval") +
+    theme(legend.position = "inside",
+          legend.position.inside = c(0.9, 0.9))
+  ggsave(paste0("figs/", file_name ,".png"), plot = plt)
+  return(plt)
 }
-petm_recovery_duration_plot("site690_PETM_recovery_interval_duration")
+petm_dur_plot2 = petm_recovery_duration_plot("site690_PETM_recovery_interval_duration")
 
 petm_recovery_stats = function(){
   h_int = recovery_interval
@@ -410,3 +433,10 @@ petm_recovery_stats = function(){
   ))
 }
 petm_recovery_stats = petm_recovery_stats()
+
+
+#### join plot of PETM duration
+
+plt = egg::ggarrange(petm_dur_plot1, petm_dur_plot2, nrow = 1, ncol = 2, labels = LETTERS[1:2])
+
+ggsave("figs/site690_joint_duration.png", plot = plt)
