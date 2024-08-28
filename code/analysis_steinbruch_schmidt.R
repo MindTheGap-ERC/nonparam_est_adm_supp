@@ -278,16 +278,17 @@ plot_r2_opt = function(output, file_name, file_type){
   s = output$sed_rate
   df = data.frame(s = rep(s, 2), val = c(v1, v2), Height = c(rep("1.56 m", length(v1)), rep("3.54 m", length(v2))))
   #df = data.frame(s, v1, v2)
-  ggplot(df, aes(x =s, y = val, group = Height, color = Height)) +
+  plt = ggplot(df, aes(x =s, y = val, group = Height, color = Height)) +
     geom_line(lwd = 2) +
     ggtitle(expression(r[opt]^2 ~ with~sedimentation~rate)) +
     xlab("Sedimentation rate [cm/kyr]") +
     ylab(expression(r[opt]^2)) +
     theme(legend.position = "inside",
           legend.position.inside = c(0.1, 0.9))
-  ggsave(paste0("figs/",file_name, file_type))
+  ggsave(paste0("figs/",file_name, file_type), plot = plt)
+  return(plt)
 }
-plot_r2_opt(fa_prec, "sbs_R2opt_vs_sedrate_prec", ".png")
+r2_plot_prec = plot_r2_opt(fa_prec, "sbs_R2opt_vs_sedrate_prec", ".png")
 
 #### absolute age of ff boundary ####
 
@@ -402,3 +403,35 @@ plt = egg::ggarrange(age_ff_plot, duration_uke_plot, elapsed_time_plot, ncol = 3
 
 
 ggsave("figs/sbs_durations_joint.png", plot = plt)
+
+
+#### try filled contour plot  ####
+## precession
+a = fa_prec$results
+dimnames(a) = list("sedr" = fa_prec$sed_rate, "height" = fa_prec$heights)
+aa = reshape2::melt(a)
+
+eTimeOpt_plot_prec = ggplot(aa, aes(x = sedr, y = height,  z = value)) +
+  geom_contour_filled() +
+  xlab("Sedimentation Rate [cm/kyr]") +
+  ylab("Height [m]") +
+  ggtitle(expression(r[opt]^2 ~ at ~ height ~ and ~ sedimentation ~ rate))
+
+plt = egg::ggarrange(r2_plot_prec, eTimeOpt_plot_prec,  ncol = 2, nrow = 1, labels = LETTERS[1:2])
+ggsave("figs/r2_plot_prec_join.png", plot = plt)
+
+### shore eccentricity
+
+r2_plot_secc = plot_r2_opt(fa_secc, "sbs_R2opt_vs_sedrate_secc", ".png")
+a = fa_secc$results
+dimnames(a) = list("sedr" = fa_secc$sed_rate, "height" = fa_secc$heights)
+aa = reshape2::melt(a)
+
+eTimeOpt_plot_secc = ggplot(aa, aes(x = sedr, y = height,  z = value)) +
+  geom_contour_filled() +
+  xlab("Sedimentation Rate [cm/kyr]") +
+  ylab("Height [m]") +
+  ggtitle(expression(r[opt]^2 ~ at ~ height ~ and ~ sedimentation ~ rate))
+
+plt = egg::ggarrange(r2_plot_secc, eTimeOpt_plot_secc,  ncol = 2, nrow = 1, labels = LETTERS[1:2])
+ggsave("figs/r2_plot_secc_join.png", plot = plt)
