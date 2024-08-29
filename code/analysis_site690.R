@@ -192,6 +192,14 @@ interval_cond_stats = list("thickness_ratio" = diff(recovery_interval)/ diff(mai
 
 #### Global plotting options ####
 
+dpi = 400
+lab_size = 7
+title_size = 8
+fig_width_cm = 12
+annot_size = 5
+legend_size = 5
+ax_size = 4
+
 const_fl_col = "red"
 inc_fl_col = "blue"
 dec_fl_col = "black"
@@ -243,13 +251,18 @@ plot_adm_site_690 = function(file_name){
     xlab("Time since beginning of PETM main event [kyr]") +
     ylab("Meters below sea floor [m]") +
     scale_y_reverse() +
-    annotate("text", x = mean(c(t_min, t_max)) - 150, y = mean(-recovery_interval), label = "recovery interval") +
-    annotate("text", x = mean(c(t_min, t_max)) - 150, y = mean(-main_interval), label = "main interval") +
-    annotate("text", x = mean(c(t_min, t_max)) - 150, y = mean(-pre_interval), label = "precursor interval") +
+    annotate("text", x = mean(c(t_min, t_max)) - 150, y = mean(-recovery_interval), label = "recovery interval", size = annot_size/.pt) +
+    annotate("text", x = mean(c(t_min, t_max)) - 150, y = mean(-main_interval), label = "main interval", size = annot_size/.pt) +
+    annotate("text", x = mean(c(t_min, t_max)) - 150, y = mean(-pre_interval), label = "precursor interval", size = annot_size/.pt) +
     ggtitle("Age-depth models for ODP Site 690") +
     theme(legend.position = "inside",
-          legend.position.inside = c(0.1, 0.9))
-    ggsave(paste0("figs/", file_name, ".png"))
+          legend.position.inside = c(0.2, 0.9),
+          plot.title = element_text(size = title_size),
+          legend.title = element_blank(),
+          axis.title = element_text(size = lab_size),
+          legend.text = element_text(size = legend_size),
+          axis.text = element_text(size = ax_size))
+    ggsave(paste0("figs/", file_name, ".png"), dpi = dpi, width = fig_width_cm, height = 10, unit = "cm")
 }
 
 plot_adm_site_690("site690_adm")
@@ -304,15 +317,21 @@ sed_rate_plot = function(file_name){
     ylim(c(0, m_sedr)) +
     geom_rect(data = rect, inherit.aes = FALSE, aes(xmin = h_min, xmax = h_max, ymin = ymin, ymax = ymax), fill = box_cols) +
     scale_color_manual(values = scenario_cols) +
-    geom_line(size = 1, alpha = 0.7) +
+    geom_line(size = 0.5, alpha = 0.7) +
     xlab("Meters below sea floor [m]") +
-    ylab("Sedimentation Rate [cm/kyr]") +
+    ylab("Sedimentation rate [cm/kyr]") +
     scale_x_reverse() +
-    annotate("text", x = - mean(main_interval), y = 10, label = "main interval", angle = 90)  +
-    annotate("text", x =  168, y = 3, label = "recovery interval", angle = 90) +
-    annotate("text", x = - mean(pre_interval), y = 10, label = "precursor interval", angle = 90) +
+    annotate("text", x = - mean(main_interval), y = 10, label = "main interval", angle = 90, size = annot_size/.pt)  +
+    annotate("text", x =  168, y = 3, label = "recovery interval", angle = 90, size = annot_size/.pt) +
+    annotate("text", x = - mean(pre_interval), y = 10, label = "precursor interval", angle = 90, size = annot_size/.pt) +
     theme(legend.position = "inside",
-          legend.position.inside = c(0.1, 0.9)) +
+          legend.position.inside = c(0.2, 0.9),
+          legend.title = element_blank(),
+          legend.key.size = unit(0.4, "cm"),
+          legend.text = element_text(size = legend_size),
+          axis.title = element_text(size = lab_size),
+          plot.title = element_text(size = title_size),
+          axis.text = element_text(size = ax_size)) +
     ggtitle("Sedimentation rate")
   ggsave(paste0("figs/",file_name, ".png"), plot = plt)
   return(plt)
@@ -335,16 +354,22 @@ condensation_plot = function(file_name){
     ylim(c(0, m_cond)) +
     geom_rect(data = rect, inherit.aes = FALSE, aes(xmin = h_min, xmax = h_max, ymin = ymin, ymax = ymax), fill = box_cols) +
     scale_color_manual(values = scenario_cols) +
-    geom_line(size = 1, alpha = 0.7) +
+    geom_line(size = 0.5, alpha = 0.7) +
     xlab("Meters below sea floor [m]") +
     ylab("Condensation [kyr/cm]") +
     scale_x_reverse() +
-    annotate("text", x = - mean(main_interval), y = 0.2, label = "main interval", angle = 90)  +
-    annotate("text", x =  -mean(recovery_interval), y = 1, label = "recovery interval", angle = 90) +
-    annotate("text", x = - mean(pre_interval), y = 0.2, label = "precursor interval", angle = 90) +
+    annotate("text", x = - mean(main_interval), y = 0.2, label = "main interval", angle = 90, size = annot_size/.pt)  +
+    annotate("text", x =  -mean(recovery_interval), y = 1, label = "recovery interval", angle = 90, size = annot_size/.pt) +
+    annotate("text", x = - mean(pre_interval), y = 0.2, label = "precursor interval", angle = 90, size = annot_size/.pt) +
+    ggtitle("Condensation") +
     theme(legend.position = "inside",
-          legend.position.inside = c(0.8, 0.9)) +
-    ggtitle("Condensation")
+          legend.position.inside = c(0.8, 0.9),
+          legend.title = element_blank(),
+          legend.key.size = unit(0.4, "cm"),
+          legend.text = element_text(size = legend_size),
+          axis.title = element_text(size = lab_size),
+          plot.title = element_text(size = title_size),
+          axis.text = element_text(size = ax_size)) 
   ggsave(paste0("figs/",file_name, ".png"), plot = plt)
   return(plt)
 }
@@ -355,7 +380,7 @@ cond_plot = condensation_plot("site690_condensation")
 
 plt = egg::ggarrange(sedr_plot, cond_plot, nrow = 1, ncol = 2, labels = LETTERS[1:2])
 
-ggsave("figs/site690_join_sedrate_cond.png", plot = plt)
+ggsave("figs/site690_join_sedrate_cond.png", plot = plt, width = fig_width_cm, height = 8, unit = "cm", dpi  = dpi)
 
 #### Duration PETM main interval ####
 petm_main_duration_plot = function(file_name){
@@ -371,9 +396,15 @@ petm_main_duration_plot = function(file_name){
     geom_density(alpha = 0.5) +
     xlab("Duration [kyr]") +
     ylab("Density") +
-    ggtitle("Duration of PETM main interval") +
+    ggtitle("PETM main interval") +
     theme(legend.position = "inside",
-          legend.position.inside = c(0.9, 0.9))
+          legend.position.inside = c(0.8, 0.9),
+          axis.title = element_text(size = title_size),
+          legend.key.size = unit(0.4, "cm"),
+          legend.text = element_text(size = legend_size),
+          legend.title = element_blank(),
+          plot.title = element_text(size = title_size),
+          axis.text = element_text(size = ax_size))
   ggsave(paste0("figs/", file_name ,".png"), plot = plt)
   return(plt)
 }
@@ -410,9 +441,15 @@ petm_recovery_duration_plot = function(file_name){
     geom_density(alpha = 0.5) +
     xlab("Duration [kyr]") +
     ylab("Density") +
-    ggtitle("Duration of PETM recovery interval") +
+    ggtitle("PETM recovery interval") +
     theme(legend.position = "inside",
-          legend.position.inside = c(0.9, 0.9))
+          legend.position.inside = c(0.8, 0.9),
+          axis.text = element_text(size = ax_size),
+          axis.title = element_text(size = title_size),
+          legend.key.size = unit(0.4, "cm"),
+          legend.text = element_text(size = legend_size),
+          legend.title = element_blank(),
+          plot.title = element_text(size = title_size))
   ggsave(paste0("figs/", file_name ,".png"), plot = plt)
   return(plt)
 }
@@ -439,4 +476,8 @@ petm_recovery_stats = petm_recovery_stats()
 
 plt = egg::ggarrange(petm_dur_plot1, petm_dur_plot2, nrow = 1, ncol = 2, labels = LETTERS[1:2])
 
-ggsave("figs/site690_joint_duration.png", plot = plt)
+ggsave("figs/site690_joint_duration.png", plot = plt, width = fig_width_cm, height = 8, unit = "cm", dpi  = dpi)
+
+
+
+

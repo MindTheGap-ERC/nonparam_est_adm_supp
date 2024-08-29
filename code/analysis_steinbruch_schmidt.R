@@ -117,11 +117,19 @@ adm_secc_abs = admtools::sedrate_to_multiadm(h_tp , t_tp_absolute, sed_rate_gen 
 adm_secc_float = admtools::sedrate_to_multiadm(h_tp , t_tp_float, sed_rate_gen = se_secc, h = h, no_of_rep = no_of_rep )
 
 #### Plot ADMs ####
+dpi = 400
+lab_size = 7
+title_size = 8
+fig_width_cm = 12
+annot_size = 5
+legend_size = 5
+ax_size = 4
+
 box_col = grey(0.7)
 col_med = "red"
 col_env = "blue"
-env_lwd = 1
-med_lwd = 2
+env_lwd = 0.5
+med_lwd = 1
 
 plot_sbs_adm_float = function(adm, xlab, file_name){
   q2_adm = admtools::quantile_adm(adm, h, 0.925)
@@ -149,13 +157,18 @@ plot_sbs_adm_float = function(adm, xlab, file_name){
     xlab(xlab) +
     ylab("Stratigraphic position [m]") +
     ggtitle("Floating age-depth model") +
-    annotate("text", x = mean(c(t_max, t_min)), y = mean(c(h_top_lkw, h_min)), label = "Lower Kellwasser Bed") +
-    annotate("text", x = mean(c(t_max, t_min)), y = mean(c(h_top_ukw, h_bottom_ukw)), label = "Upper Kellwasser Bed") +
+    annotate("text", x = mean(c(t_max, t_min)), y = mean(c(h_top_lkw, h_min)), label = "Lower Kellwasser Bed", size = annot_size/.pt) +
+    annotate("text", x = mean(c(t_max, t_min)) - 100, y = mean(c(h_top_ukw, h_bottom_ukw)) - 0.1, label = "Upper Kellwasser Bed", size = annot_size/.pt) +
     geom_hline(yintercept = h_ashbed) +
-    annotate("text", x = mean(c(t_max, t_min)), y = h_ashbed + 0.05, label = "Bentonite layer", col = grey(0.4) ) +
+    annotate("text", x = mean(c(t_max, t_min)), y = h_ashbed + 0.05, label = "Bentonite layer", col = grey(0.4) , size = annot_size/.pt) +
     theme(legend.title = element_blank(),
           legend.position = "inside",
-          legend.position.inside = c(0.1, 0.9))
+          legend.position.inside = c(0.1, 0.92),
+          plot.title = element_text(size = title_size),
+          axis.title = element_text(size = lab_size),
+          legend.key.size = unit(0.4, "cm"),
+          legend.text = element_text(size = legend_size),
+          axis.text = element_text(size = ax_size))
   ggsave(paste0("figs/", file_name, ".png"), plot = plt)
   return(plt)
 }
@@ -190,13 +203,18 @@ plot_sbs_adm_abs = function(adm, xlab, file_name){
     xlab(xlab) +
     ylab("Stratigraphic position [m]") +
     ggtitle("Anchored age-depth model") +
-    annotate("text", x = mean(c(t_max, t_min)), y = mean(c(h_top_lkw, h_min)), label = "Lower Kellwasser Bed") +
-    annotate("text", x = mean(c(t_max, t_min)), y = mean(c(h_top_ukw, h_bottom_ukw)), label = "Upper Kellwasser Bed") +
+    annotate("text", x = mean(c(t_max, t_min)), y = mean(c(h_top_lkw, h_min)), label = "Lower Kellwasser Bed", size = annot_size/.pt) +
+    annotate("text", x = mean(c(t_max, t_min)) + 0.1, y = mean(c(h_top_ukw, h_bottom_ukw)) - 0.1, label = "Upper Kellwasser Bed", size = annot_size/.pt) +
     geom_hline(yintercept = h_ashbed) +
-    annotate("text", x = mean(c(t_max, t_min)), y = h_ashbed + 0.05, label = "Bentonite layer", col = grey(0.4) ) +
+    annotate("text", x = mean(c(t_max, t_min)), y = h_ashbed + 0.05, label = "Bentonite layer", col = grey(0.4) , size = annot_size/.pt) +
     theme(legend.title = element_blank(),
           legend.position = "inside",
-          legend.position.inside = c(0.1, 0.9)) +
+          legend.position.inside = c(0.1, 0.92),
+          plot.title = element_text(size = title_size),
+          axis.title = element_text(size = lab_size),
+          legend.key.size = unit(0.4, "cm"),
+          legend.text = element_text(size = legend_size),
+          axis.text = element_text(size = ax_size)) +
     scale_x_reverse()
   ggsave(paste0("figs/", file_name, ".png"), plot = plt)
   return(plt)
@@ -212,14 +230,14 @@ adm_anchor = plot_sbs_adm_abs(adm_prec_abs, "Age [Ma]", "sbs_absolute_adm_prec")
 adm_float = plot_sbs_adm_float(adm_prec_float, "Time [kyr]", "sbs_floating_adm_prec")
 
 plt = egg::ggarrange( adm_float, adm_anchor, nrow = 1, ncol = 2, labels = LETTERS[1:2])
-ggsave("figs/sbs_join_adm_prec.png", plot = plt)
+ggsave("figs/sbs_join_adm_prec.png", plot = plt, width = fig_width_cm, height = 8, unit = "cm", dpi = dpi)
 
 ## short eccentricity
 adm_anchor = plot_sbs_adm_abs(adm_secc_abs, "Age [Ma]", "sbs_absolute_adm_secc")
 adm_float = plot_sbs_adm_float(adm_secc_float, "Time [kyr]", "sbs_floating_adm_secc")
 
 plt = egg::ggarrange( adm_float, adm_anchor, nrow = 1, ncol = 2, labels = LETTERS[1:2])
-ggsave("figs/sbs_join_adm_secc.png", plot = plt)
+ggsave("figs/sbs_join_adm_secc.png", plot = plt, width = fig_width_cm, height = 8, unit = "cm", dpi = dpi)
 
 # auxiliary function
 
@@ -270,26 +288,6 @@ ggsave("figs/sbs_join_adm_secc.png", plot = plt)
 # 
 # plot_sbs(adm_secc_abs, "sds_anchored_adm_secc")
 
-#### values of r^2_opt  ####
-
-plot_r2_opt = function(output, file_name, file_type){
-  v1 =  output$results[,which(output$heights == 1.56)]
-  v2 =  output$results[,which(output$heights == 3.54)]
-  s = output$sed_rate
-  df = data.frame(s = rep(s, 2), val = c(v1, v2), Height = c(rep("1.56 m", length(v1)), rep("3.54 m", length(v2))))
-  #df = data.frame(s, v1, v2)
-  plt = ggplot(df, aes(x =s, y = val, group = Height, color = Height)) +
-    geom_line(lwd = 2) +
-    ggtitle(expression(r[opt]^2 ~ with~sedimentation~rate)) +
-    xlab("Sedimentation rate [cm/kyr]") +
-    ylab(expression(r[opt]^2)) +
-    theme(legend.position = "inside",
-          legend.position.inside = c(0.1, 0.9))
-  ggsave(paste0("figs/",file_name, file_type), plot = plt)
-  return(plt)
-}
-r2_plot_prec = plot_r2_opt(fa_prec, "sbs_R2opt_vs_sedrate_prec", ".png")
-
 #### absolute age of ff boundary ####
 
 plot_age_ff_boundary = function(file_name, file_type){
@@ -299,13 +297,18 @@ plot_age_ff_boundary = function(file_name, file_type){
 
   plt = ggplot(df, aes(x = dur, fill = Test)) + 
     geom_density(alpha = 0.5) + 
-    xlab("Age of F-F boundary [Ma]") +
+    xlab("Age [Ma]") +
     ylab("Density") +
     ggtitle(paste0("Age of F-F boundary")) +
     scale_x_reverse() +
     theme(legend.position = "inside",
-          legend.position.inside = c(0.8, 0.9),
-          legend.title = element_blank())
+          legend.position.inside = c(0.75, 0.9),
+          legend.title = element_blank(),
+          plot.title = element_text(size = title_size),
+          axis.title = element_text(size = lab_size),
+          axis.text = element_text(size = ax_size),
+          legend.key.size = unit(0.25, "cm"),
+          legend.text = element_text(size = 5))
   ggsave(paste0("figs/", file_name, ".png"), plot = plt)
   return(plt)
 }
@@ -342,12 +345,17 @@ plot_duration_uke = function(file_name, file_type){
   
   plt = ggplot(data = df, aes(x = dur, fill = Test) ) + 
     geom_density(alpha = 0.5) + 
-    xlab("Duration of upper Kellwasser event [kyr]") + 
+    xlab("Time [kyr]") + 
     ylab("Density") +
-    ggtitle("Duration of upper Kellwasser Event") +
+    ggtitle("Duration UKE") +
     theme(legend.position = "inside",
-          legend.position.inside = c(0.8, 0.9),
-          legend.title = element_blank())
+          legend.position.inside = c(0.7, 0.9),
+          legend.title = element_blank(),
+          plot.title = element_text(size = title_size),
+          axis.title = element_text(size = lab_size),
+          axis.text = element_text(size = ax_size),
+          legend.key.size = unit(0.25, "cm"),
+          legend.text = element_text(size = 5))
   ggsave(paste0("figs/", file_name, file_type), plot = plt)
   return(plt)
 }
@@ -372,12 +380,17 @@ plot_elapsed_time_ke = function(file_name, file_type){
   
   plt = ggplot(data = df, aes(x = dur, fill = Test) ) + 
     geom_density(alpha = 0.6) + 
-    xlab("Time elapsed between Kellwasser events [kyr]") + 
+    xlab("Time [kyr]") + 
     ylab("Density") +
-    ggtitle("Time elapsed between Kellwasser Events") +
+    ggtitle("Time between KEs") +
     theme(legend.position = "inside",
-          legend.position.inside = c(0.8, 0.9),
-          legend.title = element_blank())
+          legend.position.inside = c(0.7, 0.9),
+          legend.title = element_blank(),
+          plot.title = element_text(size = title_size),
+          axis.title = element_text(size = lab_size),
+          axis.text = element_text(size = ax_size),
+          legend.key.size = unit(0.25, "cm"),
+          legend.text = element_text(size = 5))
   ggsave(paste0("figs/", file_name, file_type))
   
   return(plt)
@@ -402,10 +415,37 @@ time_ke_stats = time_between_ke_stats(adm_prec_abs)
 plt = egg::ggarrange(age_ff_plot, duration_uke_plot, elapsed_time_plot, ncol = 3, nrow = 1, labels = LETTERS[1:3])
 
 
-ggsave("figs/sbs_durations_joint.png", plot = plt)
+ggsave("figs/sbs_durations_joint.png", plot = plt, width = fig_width_cm, height = 8, unit = "cm", dpi = dpi)
 
 
 #### try filled contour plot  ####
+#### values of r^2_opt  ####
+
+plot_r2_opt = function(output, file_name, file_type){
+  v1 =  output$results[,which(output$heights == 1.56)]
+  v2 =  output$results[,which(output$heights == 3.54)]
+  s = output$sed_rate
+  df = data.frame(s = rep(s, 2), val = c(v1, v2), Height = c(rep("1.56 m", length(v1)), rep("3.54 m", length(v2))))
+  #df = data.frame(s, v1, v2)
+  plt = ggplot(df, aes(x =s, y = val, group = Height, color = Height)) +
+    geom_line(lwd = 1) +
+    ggtitle(expression(r[opt]^2 ~ at ~ height)) +
+    xlab("Sedimentation rate [cm/kyr]") +
+    ylab(expression(r[opt]^2)) +
+    theme(legend.position = "inside",
+          legend.position.inside = c(0.2, 0.9),
+          plot.title = element_text(size = title_size),
+          axis.title = element_text(size = lab_size),
+          axis.text = element_text(size = ax_size),
+          legend.key.size = unit(0.25, "cm"),
+          legend.text = element_text(size = 5),
+          legend.title = element_text(size = lab_size))
+  ggsave(paste0("figs/",file_name, file_type), plot = plt)
+  return(plt)
+}
+r2_plot_prec = plot_r2_opt(fa_prec, "sbs_R2opt_vs_sedrate_prec", ".png")
+
+
 ## precession
 a = fa_prec$results
 dimnames(a) = list("sedr" = fa_prec$sed_rate, "height" = fa_prec$heights)
@@ -415,12 +455,18 @@ eTimeOpt_plot_prec = ggplot(aa, aes(x = sedr, y = height,  z = value)) +
   geom_contour_filled() +
   xlab("Sedimentation Rate [cm/kyr]") +
   ylab("Height [m]") +
-  ggtitle(expression(r[opt]^2 ~ at ~ height ~ and ~ sedimentation ~ rate))
+  ggtitle(expression(r[opt]^2 ~ at ~ Steinbruch ~ Schmidt)) +
+  theme( plot.title = element_text(size = title_size),
+         axis.title = element_text(size = lab_size),
+         axis.text = element_text(size = ax_size),
+         legend.key.size = unit(0.25, "cm"),
+         legend.text = element_text(size = 5),
+         legend.title = element_blank())
 
 plt = egg::ggarrange(r2_plot_prec, eTimeOpt_plot_prec,  ncol = 2, nrow = 1, labels = LETTERS[1:2])
-ggsave("figs/r2_plot_prec_join.png", plot = plt)
+ggsave("figs/r2_plot_prec_join.png", plot = plt, width = fig_width_cm, height = 8, unit = "cm", dpi = dpi)
 
-### shore eccentricity
+### short eccentricity
 
 r2_plot_secc = plot_r2_opt(fa_secc, "sbs_R2opt_vs_sedrate_secc", ".png")
 a = fa_secc$results
@@ -431,7 +477,14 @@ eTimeOpt_plot_secc = ggplot(aa, aes(x = sedr, y = height,  z = value)) +
   geom_contour_filled() +
   xlab("Sedimentation Rate [cm/kyr]") +
   ylab("Height [m]") +
-  ggtitle(expression(r[opt]^2 ~ at ~ height ~ and ~ sedimentation ~ rate))
+  ggtitle(expression(r[opt]^2 ~ at ~ height ~ and ~ sedimentation ~ rate)) +
+  ggtitle(expression(r[opt]^2 ~ at ~ Steinbruch ~ Schmidt)) +
+  theme( plot.title = element_text(size = title_size),
+         axis.title = element_text(size = lab_size),
+         axis.text = element_text(size = ax_size),
+         legend.key.size = unit(0.25, "cm"),
+         legend.text = element_text(size = 5),
+         legend.title = element_blank())
 
 plt = egg::ggarrange(r2_plot_secc, eTimeOpt_plot_secc,  ncol = 2, nrow = 1, labels = LETTERS[1:2])
-ggsave("figs/r2_plot_secc_join.png", plot = plt)
+ggsave("figs/r2_plot_secc_join.png", plot = plt, width = fig_width_cm, height = 8, unit = "cm", dpi = dpi)
