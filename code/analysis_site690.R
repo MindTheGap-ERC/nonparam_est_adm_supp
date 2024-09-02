@@ -480,4 +480,4 @@ ggsave("figs/site690_joint_duration.png", plot = plt, width = fig_width_cm, heig
 
 
 
-
+save(my_adm_const, my_adm_dec, my_adm_inc, interval_cond_stats, sedr_stats, petm_main_stats, petm_recovery_stats, file = "data/site690_data.Rdata")

@@ -30,7 +30,7 @@ To reproduce the results, run
 source("code/analyses.R)
 ```
 
-in the RStudio console. This will run both analyses (site 690 and Steinbruch Schmidt), and generate all figues in the `figs/` folder.
+in the RStudio console. This will run both analyses (site 690 and Steinbruch Schmidt), generate all figues and save them in the `figs/` folder, and save the data under `data/site690_data.Rdata` and `data/sbs_data.Rdata`.
 
 ## Repository structure
 
