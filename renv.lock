@@ -93,13 +93,13 @@
       "RemoteHost": "api.github.com",
       "RemoteRepo": "admtools",
       "RemoteUsername": "MindTheGap-ERC",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "0c0bca1b75c64b6c74fbc50fa54bdb58d94b5e44",
+      "RemoteRef": "v0.3.1",
+      "RemoteSha": "8e47847dea9133f3268edc66cc0e674de17a198a",
       "Requirements": [
         "R",
         "ape"
       ],
-      "Hash": "1f1e51f93513e5aaaaf63818f64734db"
+      "Hash": "24e325729f15ff0370add4a6e2f6ab93"
     },
     "ape": {
       "Package": "ape",

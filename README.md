@@ -12,7 +12,7 @@ ORCID: [0000-0003-1559-1838](https://orcid.org/0000-0003-1559-1838)
 
 ## Requirements
 
-Base R (version >= 4) and the RStudion IDE.
+Base R (version >= 4) and the RStudio IDE.
 
 ## Usage
 

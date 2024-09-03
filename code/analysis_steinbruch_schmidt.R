@@ -2,7 +2,7 @@
 if(FALSE){
   remotes::install_github(repo = "MindTheGap-ERC/admtools",
                           build_vignettes = TRUE,
-                          ref = "HEAD",
+                          ref = "v0.3.1",
                           dependencies = TRUE)
   
 }
@@ -10,7 +10,7 @@ if(FALSE){
 
 #### Load packages ####
 library(ggplot2)
-
+library(admtools)
 #### Set seed ####
 set.seed(42)
 
