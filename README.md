@@ -27,10 +27,10 @@ to install all dependencies required for the analyses.
 To reproduce the results, run
 
 ```R
-source("code/analyses.R)
+source("code/analyses.R")
 ```
 
-in the RStudio console. This will run both analyses (site 690 and Steinbruch Schmidt), generate all figues and save them in the `figs/` folder, and save the data under `data/site690_data.Rdata` and `data/sbs_data.Rdata`.
+in the RStudio console. This will run both analyses (site 690 and Steinbruch Schmidt), generate all figues and save them in the `figs/` folder, and save the data under `data/res/site690_data.Rdata` and `data/res/sbs_data.Rdata`.
 
 ## Repository structure
 
@@ -39,6 +39,7 @@ in the RStudio console. This will run both analyses (site 690 and Steinbruch Sch
   * _analysis_site690.R_ : code for the PETM example
   * _analyses.R_ : runs both examples
 * _data_ : folder for data
+  * _res_ : folder for resulst. Initially empty, filled once `code/analyses.R` is run
   * _raw_ : folder for raw data, read only!
     * _SbS_XRF_forfactor3.csv_ : data for Steinbruch Schmidt example, from da Silva (2020, 2024)
     * _Farley_and_Eltgroth_2003_supp_data_1_site690.csv_ : data for the PETM example, from Farley and Eltgroth (2003 a, b)

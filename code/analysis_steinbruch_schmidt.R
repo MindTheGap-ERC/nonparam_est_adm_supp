@@ -490,4 +490,4 @@ plt = egg::ggarrange(r2_plot_secc, eTimeOpt_plot_secc,  ncol = 2, nrow = 1, labe
 ggsave("figs/r2_plot_secc_join.png", plot = plt, width = fig_width_cm, height = 8, unit = "cm", dpi = dpi)
 
 
-save(adm_prec_abs, adm_prec_float, adm_secc_abs, adm_secc_float, prec_ages, ff_mean_diff, ff_2sigma_diff, ff_2sigma_rat, ff_mean_diff_da_silva, ff_mean_diff_gradstein, uke_stats, time_ke_stats, file = "data/sbs_data.Rdata")
+save(adm_prec_abs, adm_prec_float, adm_secc_abs, adm_secc_float, prec_ages, ff_mean_diff, ff_2sigma_diff, ff_2sigma_rat, ff_mean_diff_da_silva, ff_mean_diff_gradstein, uke_stats, time_ke_stats, file = "data/res/sbs_data.Rdata")
