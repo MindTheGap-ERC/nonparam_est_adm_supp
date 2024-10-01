@@ -2,7 +2,7 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13639816.svg)](https://doi.org/10.5281/zenodo.13639816)
 
-Supplementary data and code for "Nonparametric estimation of age-depth models from sedimentological and stratigraphic information".
+Supplementary data and code for "Nonparametric estimation of age-depth models from sedimentological and stratigraphic information" (Hohmann et al. 2024, [DOI: 10.5194/egusphere-2024-2857](https://doi.org/10.5194/egusphere-2024-2857).
 
 ## Authors
 
