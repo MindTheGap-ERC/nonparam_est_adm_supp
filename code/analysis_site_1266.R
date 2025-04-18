@@ -156,6 +156,7 @@ for (i in names(adm_list)){
 }
 
 iqr_dur = c()
+clay_dur = c()
 med = c()
 for (i in names(adm_list)){
   adm = adm_list[[i]]
@@ -343,3 +344,4 @@ ggplot(df, aes(y = he, x = val, color = Scenario, group = ind)) +
   xlab("Time [kyr]") +
   ylab("Height [m]") +
   ggtitle("PETM age-depth models")
+
