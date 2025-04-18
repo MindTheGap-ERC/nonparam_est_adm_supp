@@ -342,9 +342,17 @@ df = data.frame(he = rep(h_eval, 9),
                 ind = rep(LETTERS[1:9], each = length(h_eval)))
 
 ggplot(df, aes(y = he, x = val, color = Scenario, group = ind)) +
+  annotate("rect", ymin = recovery_2_top, ymax = recovery_3_top, xmin = 0, xmax = 350, alpha=0.6, fill = "lightgray") +
+  annotate("rect", ymin = recovery_1_top, ymax = recovery_2_top, xmin = 0, xmax = 350, alpha=0.6, fill = "gray") +
+  annotate("rect", ymin = base_recovery, ymax = recovery_1_top, xmin = 0, xmax = 350, alpha=0.6, fill = "darkgray") +
+  annotate("rect", ymin = base_clay, ymax = base_recovery, xmin = 0, xmax = 350, alpha=0.6, fill = "white") +
+  annotate("text", y = recovery_3_top+(recovery_2_top-recovery_3_top)/2, x = 50, label = "Recovery III") +
+  annotate("text", y = recovery_2_top+(recovery_1_top-recovery_2_top)/2, x = 50, label = "Recovery II") +
+  annotate("text", y = recovery_1_top+(base_recovery-recovery_1_top)/2, x = 50, label = "Recovery I") +
+  annotate("text", y = base_recovery+(base_clay-base_recovery)/2, x = 250, label = "Core") +
   geom_line() +
   xlab("Relative time since the beginning of PETM [kyr]") +
   ylab("Depth [m composite depth]") +
-  ggtitle("PETM age-depth models") +
+  ggtitle("Age-depth models for PETM at ODP Site 1266") +
   scale_y_reverse()
 
