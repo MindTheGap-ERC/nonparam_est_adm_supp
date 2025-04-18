@@ -147,9 +147,9 @@ save.image(file = "data/res/site1266_data.RData")
 load(file = "data/res/site1266_data.RData")
 clay_layer_top = 306.15
 base_recovery = 306.4
-recovery_1_top = 306.15
-recovery_2_top = 304.7
-recovery_3_top = 304.19
+recovery_1_top = 306.15 # “Shoulder” δ13C inflection point F
+recovery_2_top = 304.7 # δ13C inflection point G
+recovery_3_top = 304.19 # End of anomalously high carbonate sedimentation
 
 for (i in names(adm_list)){
   plot(adm_list[[i]])
@@ -227,7 +227,7 @@ df = data.frame(duration = c(dur_clay_const, dur_clay_inc, dur_clay_dec),
 
 clay_layer_dur = ggplot(df, aes(x = duration, fill = Scenario)) +
   geom_density(alpha = 0.5) +
-  xlab("Duration [kyr[") +
+  xlab("Duration [kyr]") +
   ylab("Density") +
   ggtitle("Clay duration") +
   theme(legend.position = "inside",
@@ -250,6 +250,8 @@ df = data.frame(duration = c(dur_rec_const, dur_rec_inc, dur_rec_dec),
 petm_rec = ggplot(df, aes(x = duration, fill = Scenario)) +
   geom_density(alpha = 0.5) +
   ggtitle("PETM recovery duration") +
+  xlab("Duration [kyr]") +
+  ylab("Density") +
   theme(legend.position = "inside",
         legend.position.inside = c(0.8, 0.9),
         axis.text = element_text(size = ax_size),
@@ -341,7 +343,8 @@ df = data.frame(he = rep(h_eval, 9),
 
 ggplot(df, aes(y = he, x = val, color = Scenario, group = ind)) +
   geom_line() +
-  xlab("Time [kyr]") +
-  ylab("Height [m]") +
-  ggtitle("PETM age-depth models")
+  xlab("Relative time since the beginning of PETM [kyr]") +
+  ylab("Depth [m composite depth]") +
+  ggtitle("PETM age-depth models") +
+  scale_y_reverse()
 
