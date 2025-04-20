@@ -188,7 +188,7 @@ plot_sbs_adm_abs = function(adm, xlab, file_name){
   
   df = data.frame(he =rep(h, 5),
                   t = -c(q2_adm$t/1000, q1_adm$t/1000, m_adm$t/1000, m_adm$t/1000-0.053, m_adm$t/1000+0.053),
-                  type = c(rep("95 % Envelope", 2 * length(h)), rep("Median", length(h)), rep("Age uncertainty", 2 * length(h))),
+                  type = c(rep("95 % Envelope", 2 * length(h)), rep("Median", length(h)), rep("Age uncertainty (2σ)", 2 * length(h))),
                   group = rep(LETTERS[1:5], each = length(h)))
   
   
