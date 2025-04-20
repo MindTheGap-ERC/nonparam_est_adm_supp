@@ -177,6 +177,8 @@ plot_sbs_adm_float = function(adm, xlab, file_name){
 plot_sbs_adm_float(adm_prec_float, "Time [kyr]", "sbs_floating_adm_prec")
 plot_sbs_adm_float(adm_secc_float, "Time [kyr]", "sba_floating_adm_secc")
 
+uncertainty_radiometric <- 0.053 # [Ma], 2 sigma around the age
+
 plot_sbs_adm_abs = function(adm, xlab, file_name){
   #adm = adm_prec_abs
   q2_adm = admtools::quantile_adm(adm, h, 0.925)
@@ -187,7 +189,7 @@ plot_sbs_adm_abs = function(adm, xlab, file_name){
   h_min = min(c(q1_adm$h, q2_adm$h, m_adm$h))
   
   df = data.frame(he =rep(h, 5),
-                  t = -c(q2_adm$t/1000, q1_adm$t/1000, m_adm$t/1000, m_adm$t/1000-0.053, m_adm$t/1000+0.053),
+                  t = -c(q2_adm$t/1000, q1_adm$t/1000, m_adm$t/1000, m_adm$t/1000-uncertainty_radiometric, m_adm$t/1000+uncertainty_radiometric),
                   type = c(rep("95 % Envelope", 2 * length(h)), rep("Median", length(h)), rep("Age uncertainty (2σ)", 2 * length(h))),
                   group = rep(LETTERS[1:5], each = length(h)))
   
