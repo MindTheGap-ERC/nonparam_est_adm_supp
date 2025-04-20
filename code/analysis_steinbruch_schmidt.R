@@ -2,7 +2,7 @@
 if(FALSE){
   remotes::install_github(repo = "MindTheGap-ERC/admtools",
                           build_vignettes = TRUE,
-                          ref = "v0.3.1",
+                          ref = "v0.4.0",
                           dependencies = TRUE)
   
 }
@@ -130,6 +130,7 @@ col_med = "red"
 col_env = "blue"
 env_lwd = 0.5
 med_lwd = 1
+unc_lwd = 0.4
 
 plot_sbs_adm_float = function(adm, xlab, file_name){
   q2_adm = admtools::quantile_adm(adm, h, 0.925)
@@ -185,21 +186,22 @@ plot_sbs_adm_abs = function(adm, xlab, file_name){
   t_min =  - min(c(q1_adm$t/1000, q2_adm$t/1000, m_adm$t/1000))
   h_min = min(c(q1_adm$h, q2_adm$h, m_adm$h))
   
-  df = data.frame(he =rep(h, 3),
-                  t = -c(q2_adm$t/1000, q1_adm$t/1000, m_adm$t/1000),
-                  type = c(rep("95 % Envelope", 2 * length(h)), rep("Median", length(h))),
-                  group = rep(LETTERS[1:3], each = length(h)))
+  df = data.frame(he =rep(h, 5),
+                  t = -c(q2_adm$t/1000, q1_adm$t/1000, m_adm$t/1000, m_adm$t/1000-0.053, m_adm$t/1000+0.053),
+                  type = c(rep("95 % Envelope", 2 * length(h)), rep("Median", length(h)), rep("Age uncertainty", 2 * length(h))),
+                  group = rep(LETTERS[1:5], each = length(h)))
   
   
   
   rect = data.frame(h_min = c(h_bottom_ukw, h_min), h_max = c(h_top_ukw, h_top_lkw),
                     t_min = rep(t_min, 2), t_max = rep(t_max, 2))
   
-  plt = ggplot(df, aes(y = he, x = t, color = type, group = group)) + 
+  plt = ggplot(df, aes(y = he, x = t, color = type, group = group, linetype = type)) + 
     geom_rect(rect, inherit.aes = FALSE, mapping = aes(xmin = t_min, xmax = t_max, ymin = h_min, ymax = h_max), fill = box_col) +
     geom_line(aes(size = group)) +
-    scale_size_manual(values = c("A" = env_lwd, "B" = env_lwd, "C" = med_lwd), guide = "none") +
-    scale_color_manual(values = c(col_env, col_med)) +
+    scale_size_manual(values = c("A" = env_lwd, "B" = env_lwd, "C" = med_lwd, "D" = unc_lwd, "E" = unc_lwd), guide = "none") +
+    scale_color_manual(values = c(col_env, col_med, col_med)) +
+    scale_linetype_manual(values = c("solid", "dashed", "solid")) +
     xlab(xlab) +
     ylab("Stratigraphic position [m]") +
     ggtitle("Anchored age-depth model") +
