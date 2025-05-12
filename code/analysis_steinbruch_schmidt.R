@@ -81,6 +81,10 @@ t_tp_float = function(){
   return(0)
 }
 
+t_tp_anchor_no_error = function(){
+  return(- t_ashbed_mean)
+}
+
 # extract r^2_opt from eTimeOpt
 fa_prec = admtools::get_data_from_eTimeOpt(etimeOptMS_prec, index = 3)
 # generate sed rate generator
@@ -102,9 +106,12 @@ h = seq(1.05, 4.25, by = 0.05)
 #### estimate ADMs ####
 adm_prec_abs = admtools::sedrate_to_multiadm(h_tp , t_tp_absolute, sed_rate_gen = se_prec, h, no_of_rep = no_of_rep )
 adm_prec_float = admtools::sedrate_to_multiadm(h_tp , t_tp_float, sed_rate_gen = se_prec, h, no_of_rep = no_of_rep )
+adm_prec_abs_no_error = admtools::sedrate_to_multiadm(h_tp , t_tp_anchor_no_error, sed_rate_gen = se_prec, h, no_of_rep = no_of_rep )
+
 
 adm_secc_abs = admtools::sedrate_to_multiadm(h_tp , t_tp_absolute, sed_rate_gen = se_secc, h = h, no_of_rep = no_of_rep )
 adm_secc_float = admtools::sedrate_to_multiadm(h_tp , t_tp_float, sed_rate_gen = se_secc, h = h, no_of_rep = no_of_rep )
+adm_secc_abs_no_error = admtools::sedrate_to_multiadm(h_tp , t_tp_anchor_no_error, sed_rate_gen = se_secc, h, no_of_rep = no_of_rep )
 
 #### Plot ADMs ####
 dpi = 400
@@ -112,7 +119,7 @@ lab_size = 7
 title_size = 8
 fig_width_cm = 12
 annot_size = 5
-legend_size = 5
+legend_size = 3
 ax_size = 4
 
 box_col = grey(0.7)
@@ -218,12 +225,60 @@ plot_sbs_adm_abs = function(adm, xlab, file_name){
 plot_sbs_adm_abs(adm_prec_abs, "Age [Ma]", "sbs_absolute_adm_prec")
 plot_sbs_adm_abs(adm_secc_abs, "Age [Ma]", "sbs_absolute_adm_secc")
 
+## plot of anchored age-depth model without uncertainty of radiometric dates
+plot_sbs_adm_float_abs = function(adm, xlab, file_name){
+  q2_adm = admtools::quantile_adm(adm, h, 0.975)
+  q1_adm = admtools::quantile_adm(adm, h,  0.025)
+  m_adm = admtools::quantile_adm(adm, h, 0.5)
+  t_max = -min(c(q1_adm$t/1000, q2_adm$t/1000, m_adm$t/1000)) 
+  t_min = -max(c(q1_adm$t/1000, q2_adm$t/1000, m_adm$t/1000)) 
+  h_min = min(c(q1_adm$h, q2_adm$h, m_adm$h))
+  
+  df = data.frame(he =rep(h, 3),
+                  t = -c(q2_adm$t , q1_adm$t , m_adm$t )/1000,
+                  type = c(rep("95 % Envelope", 2 * length(h)), rep("Median", length(h))),
+                  group = rep(LETTERS[1:3], each = length(h)))
+  
+  
+  rect = data.frame(h_min = c(h_bottom_ukw, h_min), h_max = c(h_top_ukw, h_top_lkw),
+                    t_min = rep(t_min -0.1, 2), t_max = rep(t_max + 0.1, 2))
+  
+  plt = ggplot(df, aes(y = he, x = t, color = type, group = group)) + 
+    geom_rect(rect, inherit.aes = FALSE, mapping = aes(xmin = t_min, xmax = t_max, ymin = h_min, ymax = h_max), fill = box_col) +
+    geom_line(aes(size = group)) +
+    scale_size_manual(values = c("A" = env_lwd, "B" = env_lwd, "C" = med_lwd), guide = "none") +
+    scale_color_manual(values = c(col_env, col_med)) +
+    xlab(xlab) +
+    ylab("Stratigraphic position [m]") +
+    ggtitle("Floating age-depth model") +
+    annotate("text", x = mean(c(t_max, t_min)), y = mean(c(h_top_lkw, h_min)), label = "Lower Kellwasser Bed", size = annot_size/.pt) +
+    annotate("text", x = mean(c(t_max, t_min)), y = mean(c(h_top_ukw, h_bottom_ukw)) - 0.1, label = "Upper Kellwasser Bed", size = annot_size/.pt) +
+    geom_hline(yintercept = h_ashbed) +
+    annotate("text", x = mean(c(t_max, t_min)), y = h_ashbed + 0.05, label = "Bentonite layer", col = grey(0.4) , size = annot_size/.pt) +
+    theme(legend.title = element_blank(),
+          legend.position = "inside",
+          legend.position.inside = c(0.1, 0.92),
+          plot.title = element_text(size = title_size),
+          axis.title = element_text(size = lab_size),
+          legend.key.size = unit(0.4, "cm"),
+          legend.text = element_text(size = legend_size),
+          axis.text = element_text(size = ax_size)) +
+    scale_x_reverse()
+  plt
+  ggsave(paste0("figs/", file_name, ".png"), plot = plt)
+  return(plt)
+}
+
+plot_sbs_adm_float_abs(adm_prec_abs_no_error, "Age [Ma]", "sbs_absolute_adm_prec_no_rad" )
+plot_sbs_adm_float_abs(adm_secc_abs_no_error, "Age [Ma]", "sbs_absolute_adm_secc_no_rad" )
+
 #### JOint plot of adms ####
 ## precession
 adm_anchor = plot_sbs_adm_abs(adm_prec_abs, "Age [Ma]", "sbs_absolute_adm_prec")
 adm_float = plot_sbs_adm_float(adm_prec_float, "Time [kyr]", "sbs_floating_adm_prec")
+adm_anchor_no_rad = plot_sbs_adm_float_abs(adm_prec_abs_no_error, "Age [Ma]", "sbs_absolute_adm_prec_no_rad" )
 
-plt = egg::ggarrange( adm_float, adm_anchor, nrow = 1, ncol = 2, labels = LETTERS[1:2])
+plt = egg::ggarrange( adm_float, adm_anchor_no_rad, adm_anchor, nrow = 1, ncol = 3, labels = LETTERS[1:3])
 ggsave("figs/sbs_join_adm_prec.png", plot = plt, width = fig_width_cm, height = 8, unit = "cm", dpi = dpi)
 
 ## short eccentricity
