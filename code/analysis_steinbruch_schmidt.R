@@ -1,13 +1,3 @@
-#### install latest version ####
-if(FALSE){
-  remotes::install_github(repo = "MindTheGap-ERC/admtools",
-                          build_vignettes = TRUE,
-                          ref = "v0.4.0",
-                          dependencies = TRUE)
-  
-}
-
-
 #### Load packages ####
 library(ggplot2)
 library(admtools)
@@ -133,7 +123,7 @@ med_lwd = 1
 unc_lwd = 0.4
 
 plot_sbs_adm_float = function(adm, xlab, file_name){
-  q2_adm = admtools::quantile_adm(adm, h, 0.925)
+  q2_adm = admtools::quantile_adm(adm, h, 0.975)
   q1_adm = admtools::quantile_adm(adm, h,  0.025)
   m_adm = admtools::quantile_adm(adm, h, 0.5)
   t_max = max(c(q1_adm$t, q2_adm$t, m_adm$t))
@@ -181,7 +171,7 @@ uncertainty_radiometric <- 0.053 # [Ma], 2 sigma around the age
 
 plot_sbs_adm_abs = function(adm, xlab, file_name){
   #adm = adm_prec_abs
-  q2_adm = admtools::quantile_adm(adm, h, 0.925)
+  q2_adm = admtools::quantile_adm(adm, h, 0.975)
   q1_adm = admtools::quantile_adm(adm, h,  0.025)
   m_adm = admtools::quantile_adm(adm, h, 0.5)
   t_max = -  max(c(q1_adm$t/1000, q2_adm$t/1000, m_adm$t/1000))
@@ -249,7 +239,7 @@ ggsave("figs/sbs_join_adm_secc.png", plot = plt, width = fig_width_cm, height = 
 #   
 #   png(file = paste0("figs/", file_name, ".png"))
 #   
-#   q2_adm = admtools::quantile_adm(adm, h, 0.925)
+#   q2_adm = admtools::quantile_adm(adm, h, 0.975)
 #   q1_adm = admtools::quantile_adm(adm, h,  0.025)
 #   m_adm = admtools::quantile_adm(adm, h, 0.5)
 #   
