@@ -197,6 +197,7 @@ for (i in names(adm_list)){
   med[i] = median(sapply(aa, diff))
 }
 
+source("code/petm_recovery_stats.R")
 petm_res = petm_recovery_stats()
 
 
@@ -269,6 +270,7 @@ aggregate(df$duration, by=list(df$Scenario), FUN = median)
 #### Determine sedimentation rate ####
 
 # convert into cm/kyr
+source("code/median_sed_rate_l.R")
 sedr_const =   100 * median_sed_rate_l(adm_list$const_det, h_eval)
 sedr_inc =  100 * median_sed_rate_l(adm_list$inc_det, h_eval)
 sedr_dec =  100 * median_sed_rate_l(adm_list$dec_det, h_eval)
