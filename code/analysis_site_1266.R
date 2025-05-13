@@ -296,11 +296,20 @@ sedr_stats = list("sedr_range_const"= range(sedr_const),
 
 source("code/sed_rate_plot.R")
 sedr_plot = sed_rate_plot("site1266_sedrate")
-
+ggsave("figs/site1266_sedrate.png",
+       plot = sedr_plot,
+       width = fig_width_cm,
+       unit = "cm",
+       height = 6)
 #### Condensation plot ####
 
 source("code/condensation_plot.R")
 cond_plot = condensation_plot("site1266_condensation")
+ggsave("figs/site1266_condensation.png",
+       plot = cond_plot,
+       width = fig_width_cm,
+       unit = "cm",
+       height = 6)
 
 #### ADM plot ####
 
