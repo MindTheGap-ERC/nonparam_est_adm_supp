@@ -17,8 +17,8 @@ rec2_col = "azure3"
 rec4_col = "azure4"
 box_cols = c(core_col, rec1_col, rec2_col, rec4_col)
 scenario_cols = c(const_fl_col, inc_fl_col, dec_fl_col)
-lwd_env = 0.5
-lwd_med = 1
+lwd_env = 0.75
+lwd_med = 1.5
 med_lty = 1
 env_lty = 6
 
@@ -84,6 +84,7 @@ strat_cont_gen_det = function(){
   return(f)
 }
 
+# 3He flux observed in the strat domain with measurement error
 strat_cont_gen_rand = function(){
   # assuming the 10 % error mentioned in the ms are 1 sigma
   eps = 0.000001 # small number cutoff to prevent negative flux values
@@ -320,16 +321,22 @@ ggplot(df, aes(y = he, x = val, color = Scenario, group = ind)) +
   annotate("rect", ymin = recovery_1_top, ymax = recovery_2_top, xmin = 0, xmax = 350, alpha=0.6, fill = "gray") +
   annotate("rect", ymin = base_recovery, ymax = recovery_1_top, xmin = 0, xmax = 350, alpha=0.6, fill = "darkgray") +
   annotate("rect", ymin = base_clay, ymax = base_recovery, xmin = 0, xmax = 350, alpha=0.6, fill = "white") +
-  annotate("text", y = recovery_3_top+(recovery_2_top-recovery_3_top)/2, x = 50, label = "Recovery III") +
-  annotate("text", y = recovery_2_top+(recovery_1_top-recovery_2_top)/2, x = 50, label = "Recovery II") +
-  annotate("text", y = recovery_1_top+(base_recovery-recovery_1_top)/2, x = 50, label = "Recovery I") +
+  annotate("text", y = recovery_3_top+(recovery_2_top-recovery_3_top)/2, x = 70, label = "Recovery III") +
+  annotate("text", y = recovery_2_top+(recovery_1_top-recovery_2_top)/2, x = 70, label = "Recovery II") +
+  annotate("text", y = recovery_1_top+(base_recovery-recovery_1_top)/2, x = 70, label = "Recovery I") +
   annotate("text", y = base_recovery+(base_clay-base_recovery)/2, x = 250, label = "Core") +
-  geom_line() +
+  geom_line(aes(linetype = Type, size = ind)) +
+  scale_size_manual(values = c("A" = lwd_med, "B" = lwd_env, "C" = lwd_env, "D" = lwd_med, "E" = lwd_env, "F" = lwd_env, "G" = lwd_med, "H" =  lwd_env, "I" = lwd_env), guide = "none") +
+  scale_linetype_manual(values = c("B" = med_lty, "A" = env_lty), guide = "none") +
   xlab("Relative time since the beginning of PETM [kyr]") +
   ylab("Depth [m composite depth]") +
   ggtitle("Age-depth models for PETM at ODP Site 1266") +
   scale_y_reverse()
 
 ggsave("figs/site1266_adm.png",
-       plot = last_plot())
+       plot = last_plot(),
+       width = fig_width_cm,
+       dpi = dpi,
+       unit = "cm",
+       height = 10)
 
