@@ -12,6 +12,12 @@ email: n.h.hohmann [at] uu.nl
 Web page: [www.uu.nl/staff/NHohmann](https://www.uu.nl/staff/NHHohmann)  
 ORCID: [0000-0003-1559-1838](https://orcid.org/0000-0003-1559-1838)
 
+__Emilia Jarochowska__  
+Utrecht University  
+email: e.b.jarochowska [at] uu.nl  
+Web page: [www.uu.nl/staff/EBJarochowska](https://www.uu.nl/staff/EBJarochowska)  
+ORCID: [0000-0001-8937-9405](https://orcid.org/0000-0001-8937-9405)
+
 ## Requirements
 
 Base R (version >= 4) and the RStudio IDE.
@@ -38,13 +44,15 @@ in the RStudio console. This will run both analyses (site 690 and Steinbruch Sch
 
 * _code_ : folder for code
   * _analysis_steinbruch_schmidt.R_ : code for Steinbruch Schmidt example
-  * _analysis_site690.R_ : code for the PETM example
+  * _analysis_site1266.R_ : code for the PETM example
   * _analyses.R_ : runs both examples
+  * Helper functions:
+    _condensation_plot.R_
+    _sed_rate_plot.R_
 * _data_ : folder for data
   * _res_ : folder for resulst. Initially empty, filled once `code/analyses.R` is run
   * _raw_ : folder for raw data, read only!
     * _SbS_XRF_forfactor3.csv_ : data for Steinbruch Schmidt example, from da Silva (2020, 2024)
-    * _Farley_and_Eltgroth_2003_supp_data_1_site690.csv_ : data for the PETM example, from Farley and Eltgroth (2003 a, b)
     * _murphy_et_al_2010_1-s2.0-S0016703710003108-mmc3.txt_ : raw data from ODP site 1266, from Murphy et al. (2010)
     * _murphy_et_al_2010_1-s2.0-S0016703710003108-mmc3.csv_ : tabular data from ODP site 1266, from Murphy et al. (2010)
 * _figs_ : folder for figures. Initially empty, filled once `code/analyses.R` is run
@@ -62,24 +70,24 @@ Data in `data/raw/SbS_XRF_forfactor3.csv` and parts of the code in `code/analysi
 
 * da Silva, A.-C. (2024). Anchoring the Late Devonian mass extinction in absolute time by integrating climatic controls and radio-isotopic dating: Supplementary code (v1.0.0). Zenodo. [DOI: 10.5281/zenodo.12516430](https://doi.org/10.5281/zenodo.12516430), In supplement to Da Silva, AC., Sinnesael, M., Claeys, P. et al. Anchoring the Late Devonian mass extinction in absolute time by integrating climatic controls and radio-isotopic dating. Sci Rep 10, 12940 (2020). [DOI: 10.1038/s41598-020-69097-6](https://doi.org/10.1038/s41598-020-69097-6)
 
-Data in `data/raw/Farley_and_Eltgroth_2003_supp_data_1_site690.csv`
+The materials are protected by copyright and shared under the [CC BY 4.0 license](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+Data in `data/raw/murphy_et_al_2010_1-s2.0-S0016703710003108-mmc3.csv`
 is from  
 
-* Farley, Kenneth A; Eltgroth, Selene F (2003): (Appendix 1) Helium isotopic ratios and sedimentation rate model of ODP Hole 113-690B [dataset]. PANGAEA, [DOI: 10.1594/PANGAEA.723907](https://doi.org/10.1594/PANGAEA.723907), In supplement to: Farley, KA; Eltgroth, SF (2003): An alternative age model for the Paleocene-Eocene thermal maximum using extraterrestrial 3He. Earth and Planetary Science Letters, 208(3-4), 135-148, [DOI: 10.1016/S0012-821X(03)00017-7](https://doi.org/10.1016/S0012-821X(03)00017-7)
+* Murphy, B. H., Farley, K. A., & Zachos, J. C. (2010). An extraterrestrial 3He-based timescale for the Paleocene–Eocene thermal maximum (PETM) from Walvis Ridge, IODP Site 1266. Geochimica et Cosmochimica Acta, 74(17), 5098–5108. https://doi.org/10.1016/j.gca.2010.03.039
 
-Data in `data/raw/murphy_et_al_2010_1-s2.0-S0016703710003108-mmc3.txt` is from
-
-* B.H. Murphy, K.A. Farley, J.C. Zachos, (2010): An extraterrestrial 3He-based timescale for the Paleocene–Eocene thermal maximum (PETM) from Walvis Ridge, IODP Site 1266. Geochimica et Cosmochimica Acta, [DOI: 10.1016/j.gca.2010.03.039](https://doi.org/10.1016/j.gca.2010.03.039).
+The dataset is protected by copyright and shared under the [CC BY 3.0 license](https://creativecommons.org/licenses/by/3.0/legalcode.en)
 
 ## Citation
 
 Please cite this code as
 
-* Hohmann, N. (2024). Supplementary data and code for "Nonparametric estimation of age-depth models from sedimentological and stratigraphic data" (v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.13639816
+* Hohmann, N. & Jarochowska, E. (2025). Supplementary data and code for "Nonparametric estimation of age-depth models from sedimentological and stratigraphic data" (v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.13639816
 
 ## Copyright
 
-Copyright 2023-2024 Netherlands eScience Center and Utrecht University.
+Copyright 2023-2025 Utrecht University.
 
 ## License
 
