@@ -275,6 +275,7 @@ sedr_plot = sed_rate_plot("site1266_sedrate")
 
 #### Condensation plot ####
 
+source("code/condensation_plot.R")
 cond_plot = condensation_plot("site1266_condensation")
 
 #### JOin plot of sedimentation and condensation
