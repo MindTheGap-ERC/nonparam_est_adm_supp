@@ -154,7 +154,6 @@ plot_sbs_adm_float = function(adm, xlab, file_name){
     scale_color_manual(values = c(col_env, col_med)) +
     xlab(xlab) +
     ylab("Stratigraphic position [m]") +
-    ggtitle("Floating age-depth model") +
     annotate("text", x = mean(c(t_max, t_min)), y = mean(c(h_top_lkw, h_min)), label = "Lower Kellwasser Bed", size = annot_size/.pt) +
     annotate("text", x = mean(c(t_max, t_min)) - 100, y = mean(c(h_top_ukw, h_bottom_ukw)) - 0.1, label = "Upper Kellwasser Bed", size = annot_size/.pt) +
     geom_hline(yintercept = h_ashbed) +
@@ -203,14 +202,13 @@ plot_sbs_adm_abs = function(adm, xlab, file_name){
     scale_linetype_manual(values = c("solid", "dashed", "solid")) +
     xlab(xlab) +
     ylab("Stratigraphic position [m]") +
-    ggtitle("Anchored age-depth model") +
     annotate("text", x = mean(c(t_max, t_min)), y = mean(c(h_top_lkw, h_min)), label = "Lower Kellwasser Bed", size = annot_size/.pt) +
-    annotate("text", x = mean(c(t_max, t_min)) + 0.1, y = mean(c(h_top_ukw, h_bottom_ukw)) - 0.1, label = "Upper Kellwasser Bed", size = annot_size/.pt) +
+    annotate("text", x = mean(c(t_max, t_min)) - 0.2, y = mean(c(h_top_ukw, h_bottom_ukw)) - 0.1, label = "Upper Kellwasser Bed", size = annot_size/.pt) +
     geom_hline(yintercept = h_ashbed) +
     annotate("text", x = mean(c(t_max, t_min)), y = h_ashbed + 0.05, label = "Bentonite layer", col = grey(0.4) , size = annot_size/.pt) +
     theme(legend.title = element_blank(),
           legend.position = "inside",
-          legend.position.inside = c(0.1, 0.92),
+          legend.position.inside = c(0.1, 0.89),
           plot.title = element_text(size = title_size),
           axis.title = element_text(size = lab_size),
           legend.key.size = unit(0.4, "cm"),
@@ -249,10 +247,9 @@ plot_sbs_adm_float_abs = function(adm, xlab, file_name){
     scale_size_manual(values = c("A" = env_lwd, "B" = env_lwd, "C" = med_lwd), guide = "none") +
     scale_color_manual(values = c(col_env, col_med)) +
     xlab(xlab) +
-    ylab("Stratigraphic position [m]") +
-    ggtitle("Floating age-depth model") +
+    ylab("Stratigraphic position [m]")  +
     annotate("text", x = mean(c(t_max, t_min)), y = mean(c(h_top_lkw, h_min)), label = "Lower Kellwasser Bed", size = annot_size/.pt) +
-    annotate("text", x = mean(c(t_max, t_min)), y = mean(c(h_top_ukw, h_bottom_ukw)) - 0.1, label = "Upper Kellwasser Bed", size = annot_size/.pt) +
+    annotate("text", x = mean(c(t_max, t_min) - 0.2), y = mean(c(h_top_ukw, h_bottom_ukw)) - 0.1, label = "Upper Kellwasser Bed", size = annot_size/.pt) +
     geom_hline(yintercept = h_ashbed) +
     annotate("text", x = mean(c(t_max, t_min)), y = h_ashbed + 0.05, label = "Bentonite layer", col = grey(0.4) , size = annot_size/.pt) +
     theme(legend.title = element_blank(),
@@ -279,13 +276,18 @@ adm_float = plot_sbs_adm_float(adm_prec_float, "Time [kyr]", "sbs_floating_adm_p
 adm_anchor_no_rad = plot_sbs_adm_float_abs(adm_prec_abs_no_error, "Age [Ma]", "sbs_absolute_adm_prec_no_rad" )
 
 plt = egg::ggarrange( adm_float, adm_anchor_no_rad, adm_anchor, nrow = 1, ncol = 3, labels = LETTERS[1:3])
+ggsave("figs/sbs_join_adm_prec_3_adms.png", plot = plt, width = fig_width_cm, height = 8, unit = "cm", dpi = dpi)
+
+# plot 2 age-depth models
+plt = egg::ggarrange( adm_anchor_no_rad, adm_anchor, nrow = 1, ncol = 2, labels = LETTERS[1:2])
 ggsave("figs/sbs_join_adm_prec.png", plot = plt, width = fig_width_cm, height = 8, unit = "cm", dpi = dpi)
 
 ## short eccentricity
 adm_anchor = plot_sbs_adm_abs(adm_secc_abs, "Age [Ma]", "sbs_absolute_adm_secc")
 adm_float = plot_sbs_adm_float(adm_secc_float, "Time [kyr]", "sbs_floating_adm_secc")
+adm_anchor_no_rad = plot_sbs_adm_float_abs(adm_secc_abs_no_error, "Age [Ma]", "sbs_absolute_adm_prec_no_rad" )
 
-plt = egg::ggarrange( adm_float, adm_anchor, nrow = 1, ncol = 2, labels = LETTERS[1:2])
+plt = egg::ggarrange( adm_anchor_no_rad, adm_anchor, nrow = 1, ncol = 2, labels = LETTERS[1:2])
 ggsave("figs/sbs_join_adm_secc.png", plot = plt, width = fig_width_cm, height = 8, unit = "cm", dpi = dpi)
 
 # auxiliary function
@@ -351,7 +353,7 @@ plot_age_ff_boundary = function(file_name, file_type){
     ggtitle(paste0("Age of F-F boundary")) +
     scale_x_reverse() +
     theme(legend.position = "inside",
-          legend.position.inside = c(0.75, 0.9),
+          legend.position.inside = c(0.79, 0.95),
           legend.title = element_blank(),
           plot.title = element_text(size = title_size),
           axis.title = element_text(size = lab_size),
@@ -385,6 +387,16 @@ ff_2sigma_rat = 1- prec_ages$`2sig` / ff_2sigma_dasilva
 ff_mean_diff_da_silva = ff_mean_gradstein - ff_mean_dasilva
 ff_mean_diff_gradstein = ff_mean_gradstein - prec_ages$mean
 
+## median time between ash layer and base of upper kellwasser event
+h_ashbed
+l = sapply(admtools::get_time(adm_prec_abs_no_error, h =  c(h_ashbed, h_f_f_bdry)), function(x) abs(x[1]- x[2]))
+median(l)
+diff(c(h_ashbed, h_f_f_bdry))
+ci_eqiv = function(x){
+  #' get 95 % HD interval
+  y = quantile(x, probs = c(0.025, 0.975))
+  return(c(y, "width" = unname(diff(y))))
+}
 #### Duration of upper Kellwasser event ####
 
 plot_duration_uke = function(file_name, file_type){
@@ -398,7 +410,7 @@ plot_duration_uke = function(file_name, file_type){
     ylab("Density") +
     ggtitle("Duration UKE") +
     theme(legend.position = "inside",
-          legend.position.inside = c(0.7, 0.9),
+          legend.position.inside = c(0.7, 0.95),
           legend.title = element_blank(),
           plot.title = element_text(size = title_size),
           axis.title = element_text(size = lab_size),
@@ -433,7 +445,7 @@ plot_elapsed_time_ke = function(file_name, file_type){
     ylab("Density") +
     ggtitle("Time between KEs") +
     theme(legend.position = "inside",
-          legend.position.inside = c(0.7, 0.9),
+          legend.position.inside = c(0.7, 0.95),
           legend.title = element_blank(),
           plot.title = element_text(size = title_size),
           axis.title = element_text(size = lab_size),
@@ -462,8 +474,6 @@ time_ke_stats = time_between_ke_stats(adm_prec_abs)
 
 #### Join plot of durations sbs ####
 plt = egg::ggarrange(age_ff_plot, duration_uke_plot, elapsed_time_plot, ncol = 3, nrow = 1, labels = LETTERS[1:3])
-
-
 ggsave("figs/sbs_durations_joint.png", plot = plt, width = fig_width_cm, height = 8, unit = "cm", dpi = dpi)
 
 
