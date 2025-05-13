@@ -345,7 +345,7 @@ ggplot(df, aes(y = he, x = val, color = Scenario, group = ind)) +
   scale_linetype_manual(values = c("B" = med_lty, "A" = env_lty), guide = "none") +
   xlab("Relative time since the beginning of PETM [kyr]") +
   ylab("Depth [m composite depth]") +
-  ggtitle("Age-depth models for PETM at ODP Site 1266") +
+  ggtitle("Age-depth models for PETM at IODP Site 1266") +
   scale_y_reverse()
 
 ggsave("figs/site1266_adm.png",
