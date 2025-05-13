@@ -197,12 +197,13 @@ for (i in names(adm_list)){
   med[i] = median(sapply(aa, diff))
 }
 
+source("code/petm_recovery_stats.R")
 petm_res = petm_recovery_stats()
 
 
-## Plot: duration of clay layer and recovery interval
+##### Duration of clay layer #####
+
 clay_int = c(base_clay, clay_layer_top)
-recovery_int = c(base_recovery, recovery_3_top)
 dur_clay_const = sapply(get_time(adm_list$const_det, h = rev(clay_int)), diff)
 dur_clay_inc = sapply(get_time(adm_list$inc_det, h = rev(clay_int)), diff)
 dur_clay_dec = sapply(get_time(adm_list$dec_det, h = rev(clay_int)), diff)
@@ -225,6 +226,9 @@ clay_layer_dur = ggplot(df, aes(x = duration, fill = Scenario)) +
         legend.title = element_blank(),
         plot.title = element_text(size = title_size))
 
+##### Duration of the recovery layer #####
+
+recovery_int = c(base_recovery, recovery_3_top)
 dur_rec_const = sapply(get_time(adm_list$const_det, h = rev(recovery_int)), diff)
 dur_rec_inc = sapply(get_time(adm_list$inc_det, h = rev(recovery_int)), diff)
 dur_rec_dec = sapply(get_time(adm_list$dec_det, h = rev(recovery_int)), diff)
@@ -250,10 +254,23 @@ petm_rec = ggplot(df, aes(x = duration, fill = Scenario)) +
 
 plt = egg::ggarrange(clay_layer_dur, petm_rec, nrow = 1, ncol = 2, labels = LETTERS[1:2])
 
+##### Duration of PETM #####
+
+PETM_int = c(base_clay, recovery_3_top)
+dur_PETM_const = sapply(get_time(adm_list$const_det, h = rev(PETM_int)), diff)
+dur_PETM_inc = sapply(get_time(adm_list$inc_det, h = rev(PETM_int)), diff)
+dur_PETM_dec = sapply(get_time(adm_list$dec_det, h = rev(PETM_int)), diff)
+df = data.frame(duration = c(dur_PETM_const, dur_PETM_inc, dur_PETM_dec),
+                Scenario = c(rep("Constant flux", length(dur_PETM_const)),
+                             rep("Increasing flux", length(dur_PETM_inc)),
+                             rep("Decreasing flux", length(dur_PETM_dec))))
+
+aggregate(df$duration, by=list(df$Scenario), FUN = median)
 
 #### Determine sedimentation rate ####
 
 # convert into cm/kyr
+source("code/median_sed_rate_l.R")
 sedr_const =   100 * median_sed_rate_l(adm_list$const_det, h_eval)
 sedr_inc =  100 * median_sed_rate_l(adm_list$inc_det, h_eval)
 sedr_dec =  100 * median_sed_rate_l(adm_list$dec_det, h_eval)
@@ -277,13 +294,6 @@ sedr_plot = sed_rate_plot("site1266_sedrate")
 
 source("code/condensation_plot.R")
 cond_plot = condensation_plot("site1266_condensation")
-
-#### JOin plot of sedimentation and condensation
-
-plt = egg::ggarrange(sedr_plot, cond_plot, nrow = 1, ncol = 2, labels = LETTERS[1:2])
-
-ggsave("figs/site690_join_sedrate_cond.png", plot = plt, width = fig_width_cm, height = 8, unit = "cm", dpi  = dpi)
-
 
 #### ADM plot ####
 
@@ -319,4 +329,7 @@ ggplot(df, aes(y = he, x = val, color = Scenario, group = ind)) +
   ylab("Depth [m composite depth]") +
   ggtitle("Age-depth models for PETM at ODP Site 1266") +
   scale_y_reverse()
+
+ggsave("figs/site1266_adm.png",
+       plot = last_plot())
 
