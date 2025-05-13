@@ -219,7 +219,7 @@ clay_layer_dur = ggplot(df, aes(x = duration, fill = Scenario)) +
   ylab("Density") +
   ggtitle("Clay duration") +
   theme(legend.position = "inside",
-        legend.position.inside = c(0.8, 0.9),
+        legend.position.inside = c(0.8, 0.85),
         axis.text = element_text(size = ax_size),
         axis.title = element_text(size = title_size),
         legend.key.size = unit(0.4, "cm"),
@@ -244,7 +244,7 @@ petm_rec = ggplot(df, aes(x = duration, fill = Scenario)) +
   xlab("Duration [kyr]") +
   ylab("Density") +
   theme(legend.position = "inside",
-        legend.position.inside = c(0.8, 0.9),
+        legend.position.inside = c(0.8, 0.85),
         axis.text = element_text(size = ax_size),
         axis.title = element_text(size = title_size),
         legend.key.size = unit(0.4, "cm"),
@@ -254,6 +254,12 @@ petm_rec = ggplot(df, aes(x = duration, fill = Scenario)) +
   
 
 plt = egg::ggarrange(clay_layer_dur, petm_rec, nrow = 1, ncol = 2, labels = LETTERS[1:2])
+
+ggsave(filename = "figs/site1266_joint_duration.png",
+       plot = plt,
+       width = fig_width_cm,
+       unit = "cm",
+       height = 6)
 
 ##### Duration of PETM #####
 
