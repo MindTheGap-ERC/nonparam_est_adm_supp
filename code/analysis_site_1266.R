@@ -1,3 +1,6 @@
+#### set seed ####
+set.seed(42)
+
 #### Global plotting options ####
 
 dpi = 400
@@ -24,7 +27,8 @@ env_lty = 6
 
 
 # load data from Murphy et al. https://doi.org/10.1016/j.gca.2010.03.039
-data = read.csv("data/raw/murphy_et_al_2010_1-s2.0-S0016703710003108-mmc3.csv", header = TRUE, sep = "\t")
+data = read.csv(file = "data/raw/murphy_et_al_2010_1-s2.0-S0016703710003108-mmc3.csv",
+                header = TRUE, sep = "\t")
 
 # heights
 h = data$Depth..mcd.
@@ -33,6 +37,7 @@ h = data$Depth..mcd.
 base_clay = 306.78 #Murphy et al., Table 1
 
 library(admtools)
+library(ggplot2)
 
 h_eval = seq(303.5, base_clay, by = 0.01) # heights where the ages are determined - cm resolution
 subdiv = 10000 # numeric options for integration
@@ -171,6 +176,7 @@ save.image(file = "data/res/site1266_data.RData")
 load(file = "data/res/site1266_data.RData")
 
 ##### Reference points and intervals #####
+# From Murphy et al. 2010, Table 1.
 clay_layer_top = 306.15
 base_recovery = 306.4
 recovery_1_top = 306.15 # “Shoulder” δ13C inflection point F
@@ -184,7 +190,7 @@ recovery3_interval <- c(recovery_3_top, recovery_2_top)
 
 
 for (i in names(adm_list)){
-  plot(adm_list[[i]])
+  plot(adm_list[[i]], main = i)
 }
 
 iqr_dur = c()
@@ -197,6 +203,9 @@ for (i in names(adm_list)){
   clay_dur[i] = IQR(sapply(aa, diff))
   med[i] = median(sapply(aa, diff))
 }
+# no difference between results derived with and without incorporating measurement
+# errors in 3He flux measured throughout the section
+# -> focus on case with uncertainty from background flux
 
 source("code/petm_recovery_stats.R")
 petm_res = petm_recovery_stats()
