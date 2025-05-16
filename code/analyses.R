@@ -1,6 +1,10 @@
 cat("Running analyses for IODP Site 1266 \n")
 source("code/analysis_site_1266.R")
+cat("Plotting results of site 1266\n")
+source("code/plots_site_1266.R")
 cat("Running analysis for Steinbruch Schmidt\n")
 source("code/analysis_steinbruch_schmidt.R")
+cat("Plotting results for Steinbruch Schmidt")
+source("code/plot_steinbruch_schmidt.R")
 
 cat("done! Generated figures are in the folder figs/, data is in data/res/site1266_data.Rdata and data/res/sbs_data.Rdata. \n")
