@@ -1,6 +1,6 @@
 # Intro
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13639816.svg)](https://doi.org/10.5281/zenodo.13639816)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15489276.svg)](https://doi.org/10.5281/zenodo.15489276)
 
 Supplementary data and code for "Nonparametric estimation of age-depth
 models from sedimentological and stratigraphic information" (Hohmann et
@@ -119,10 +119,7 @@ license](https://creativecommons.org/licenses/by/3.0/legalcode.en)
 
 Please cite this code as
 
--   Hohmann, N. & Jarochowska, E. (2025). Supplementary data and code
-    for "Nonparametric estimation of age-depth models from
-    sedimentological and stratigraphic data" (v1.0.0). Zenodo.
-    <https://doi.org/10.5281/zenodo.13639816>
+-   Hohmann, N., & Jarochowska, E. (2025). Supplementary data and code for "Nonparametric estimation of age-depth models from sedimentological and stratigraphic data" (v1.1.0). Zenodo. <https://doi.org/10.5281/zenodo.15489276>
 
 ## Copyright
 
