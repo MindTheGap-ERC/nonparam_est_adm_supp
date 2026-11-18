@@ -19,8 +19,8 @@ condensation_plot = function(){
     annotate("text", x = mean(recovery2_interval), y = 5.0, label = "Recovery II", size = annot_size/.pt) +
     annotate("text", x = mean(recovery3_interval), y = 5.0, label = "Recovery III", size = annot_size/.pt) +
     ggtitle("Condensation") +
-    theme(legend.position = "inside",
-          legend.position.inside = c(0.1, 0.9),
+    theme(legend.position = "bottom",
+          legend.margin = margin(0, 0, 0, 0),
           legend.title = element_blank(),
           legend.key.size = unit(0.4, "cm"),
           legend.text = element_text(size = legend_size),

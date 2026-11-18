@@ -61,8 +61,8 @@ clay_layer_dur = ggplot(df, aes(x = duration, fill = Scenario)) +
   xlab("Duration [kyr]") +
   ylab("Density") +
   ggtitle("Clay duration") +
-  theme(legend.position = "inside",
-        legend.position.inside = c(0.8, 0.85),
+  legend_top_right +
+  theme(
         axis.text = element_text(size = ax_size),
         axis.title = element_text(size = lab_size),
         legend.key.size = unit(0.4, "cm"),
@@ -86,8 +86,8 @@ petm_rec = ggplot(df, aes(x = duration, fill = Scenario)) +
   ggtitle("PETM recovery duration") +
   xlab("Duration [kyr]") +
   ylab("Density") +
-  theme(legend.position = "inside",
-        legend.position.inside = c(0.8, 0.85),
+  legend_top_right +
+  theme(
         axis.text = element_text(size = ax_size),
         axis.title = element_text(size = lab_size),
         legend.key.size = unit(0.4, "cm"),

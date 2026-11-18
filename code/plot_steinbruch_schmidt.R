@@ -147,7 +147,8 @@ plot_r2_opt = function(output){
     xlab("Sedimentation rate [cm/kyr]") +
     ylab(expression(r[opt]^2)) +
     theme(legend.position = "inside",
-          legend.position.inside = c(0.2, 0.9),
+          legend.position.inside = c(0.01, 0.98),
+          legend.justification = c(0, 1),
           plot.title = element_text(size = title_size),
           axis.title = element_text(size = lab_size),
           axis.text = element_text(size = ax_size),
@@ -166,6 +167,7 @@ aa = reshape2::melt(a)
 
 eTimeOpt_plot_prec = ggplot(aa, aes(x = sedr, y = height,  z = value)) +
   geom_contour_filled() +
+  guides(fill = guide_legend(nrow = 3, byrow = TRUE)) +
   xlab("Sedimentation Rate [cm/kyr]") +
   ylab("Height [m]") +
   ggtitle(expression(r[opt]^2 ~ at ~ Steinbruch ~ Schmidt)) +
@@ -174,6 +176,7 @@ eTimeOpt_plot_prec = ggplot(aa, aes(x = sedr, y = height,  z = value)) +
          axis.text = element_text(size = ax_size),
          legend.key.size = unit(0.25, "cm"),
          legend.text = element_text(size = legend_size),
+         legend.position = "bottom",
          legend.title = element_blank())
 
 plt = egg::ggarrange(r2_plot_prec, eTimeOpt_plot_prec,
@@ -193,6 +196,7 @@ aa = reshape2::melt(a)
 
 eTimeOpt_plot_secc = ggplot(aa, aes(x = sedr, y = height,  z = value)) +
   geom_contour_filled() +
+  guides(fill = guide_legend(nrow = 3, byrow = TRUE)) +
   xlab("Sedimentation Rate [cm/kyr]") +
   ylab("Height [m]") +
   ggtitle(expression(r[opt]^2 ~ at ~ Steinbruch ~ Schmidt)) +
@@ -201,6 +205,7 @@ eTimeOpt_plot_secc = ggplot(aa, aes(x = sedr, y = height,  z = value)) +
          axis.text = element_text(size = ax_size),
          legend.key.size = unit(0.25, "cm"),
          legend.text = element_text(size = legend_size),
+         legend.position = "bottom",
          legend.title = element_blank())
 
 plt = egg::ggarrange(r2_plot_secc, eTimeOpt_plot_secc,
@@ -226,8 +231,8 @@ plot_age_ff_boundary = function(){
     ylab("Density") +
     ggtitle(paste0("Age of F-F boundary")) +
     scale_x_reverse() +
-    theme(legend.position = "inside",
-          legend.position.inside = c(0.79, 0.95),
+    legend_top_right +
+    theme(
           legend.title = element_blank(),
           plot.title = element_text(size = title_size),
           axis.title = element_text(size = lab_size),
@@ -249,8 +254,8 @@ plot_duration_uke = function(){
     xlab("Time [kyr]") + 
     ylab("Density") +
     ggtitle("Duration UKE") +
-    theme(legend.position = "inside",
-          legend.position.inside = c(0.7, 0.95),
+    legend_top_right +
+    theme(
           legend.title = element_blank(),
           plot.title = element_text(size = title_size),
           axis.title = element_text(size = lab_size),
@@ -272,8 +277,8 @@ plot_elapsed_time_ke = function(){
     xlab("Time [kyr]") + 
     ylab("Density") +
     ggtitle("Time between KEs") +
-    theme(legend.position = "inside",
-          legend.position.inside = c(0.7, 0.95),
+    legend_top_right +
+    theme(
           legend.title = element_blank(),
           plot.title = element_text(size = title_size),
           axis.title = element_text(size = lab_size),
