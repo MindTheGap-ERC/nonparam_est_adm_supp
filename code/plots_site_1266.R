@@ -3,6 +3,11 @@
 load(file = "data/res/site1266_data.RData")
 
 library(ggplot2)
+library(admtools)
+# overrides plotting options restored from the analysis workspace
+source("code/thesis_plot_settings.R")
+lwd_med = 0.8 # line widths of ADM plot, thinner for print
+lwd_env = 0.5
 
 ##### Reference points and intervals #####
 # From Murphy et al. 2010, Table 1.
@@ -59,7 +64,7 @@ clay_layer_dur = ggplot(df, aes(x = duration, fill = Scenario)) +
   theme(legend.position = "inside",
         legend.position.inside = c(0.8, 0.85),
         axis.text = element_text(size = ax_size),
-        axis.title = element_text(size = title_size),
+        axis.title = element_text(size = lab_size),
         legend.key.size = unit(0.4, "cm"),
         legend.text = element_text(size = legend_size),
         legend.title = element_blank(),
@@ -84,20 +89,18 @@ petm_rec = ggplot(df, aes(x = duration, fill = Scenario)) +
   theme(legend.position = "inside",
         legend.position.inside = c(0.8, 0.85),
         axis.text = element_text(size = ax_size),
-        axis.title = element_text(size = title_size),
+        axis.title = element_text(size = lab_size),
         legend.key.size = unit(0.4, "cm"),
         legend.text = element_text(size = legend_size),
         legend.title = element_blank(),
         plot.title = element_text(size = title_size))
 
 
-plt = egg::ggarrange(clay_layer_dur, petm_rec, nrow = 1, ncol = 2, labels = LETTERS[1:2])
+plt = egg::ggarrange(clay_layer_dur, petm_rec, nrow = 2, ncol = 1,
+                     labels = LETTERS[1:2], label.args = panel_label_args,
+                     draw = FALSE)
 
-ggsave(filename = "figs/site1266_joint_duration.png",
-       plot = plt,
-       width = fig_width_cm,
-       unit = "cm",
-       height = 6)
+save_thesis_fig("figs/site1266_joint_duration.png", plot = plt, height_cm = 12)
 
 ##### Duration of PETM #####
 
@@ -133,21 +136,13 @@ sedr_stats = list("sedr_range_const"= range(sedr_const),
 ##### sedimentation rate plot #####
 
 source("code/sed_rate_plot.R")
-sedr_plot = sed_rate_plot("site1266_sedrate")
-ggsave("figs/site1266_sedrate.png",
-       plot = sedr_plot,
-       width = fig_width_cm,
-       unit = "cm",
-       height = 6)
+sedr_plot = sed_rate_plot()
+save_thesis_fig("figs/site1266_sedrate.png", plot = sedr_plot, height_cm = 8)
 #### Condensation plot ####
 
 source("code/condensation_plot.R")
-cond_plot = condensation_plot("site1266_condensation")
-ggsave("figs/site1266_condensation.png",
-       plot = cond_plot,
-       width = fig_width_cm,
-       unit = "cm",
-       height = 6)
+cond_plot = condensation_plot()
+save_thesis_fig("figs/site1266_condensation.png", plot = cond_plot, height_cm = 8)
 
 #### ADM plot ####
 
@@ -169,27 +164,28 @@ df = data.frame(he = rep(h_eval, 9),
                 Type = rep(rep(c("B","A", "A"), 3), each = length(h_eval)),
                 ind = rep(LETTERS[1:9], each = length(h_eval)))
 
-ggplot(df, aes(y = he, x = val, color = Scenario, group = ind)) +
+adm_plot = ggplot(df, aes(y = he, x = val, color = Scenario, group = ind)) +
   annotate("rect", ymin = recovery_2_top, ymax = recovery_3_top, xmin = 0, xmax = 350, alpha=0.6, fill = "lightgray") +
   annotate("rect", ymin = recovery_1_top, ymax = recovery_2_top, xmin = 0, xmax = 350, alpha=0.6, fill = "gray") +
   annotate("rect", ymin = base_recovery, ymax = recovery_1_top, xmin = 0, xmax = 350, alpha=0.6, fill = "darkgray") +
   annotate("rect", ymin = base_clay, ymax = base_recovery, xmin = 0, xmax = 350, alpha=0.6, fill = "white") +
-  annotate("text", y = recovery_3_top+(recovery_2_top-recovery_3_top)/2, x = 70, label = "Recovery III") +
-  annotate("text", y = recovery_2_top+(recovery_1_top-recovery_2_top)/2, x = 70, label = "Recovery II") +
-  annotate("text", y = recovery_1_top+(base_recovery-recovery_1_top)/2, x = 70, label = "Recovery I") +
-  annotate("text", y = base_recovery+(base_clay-base_recovery)/2, x = 250, label = "Core") +
-  geom_line(aes(linetype = Type, size = ind)) +
-  scale_size_manual(values = c("A" = lwd_med, "B" = lwd_env, "C" = lwd_env, "D" = lwd_med, "E" = lwd_env, "F" = lwd_env, "G" = lwd_med, "H" =  lwd_env, "I" = lwd_env), guide = "none") +
+  annotate("text", y = recovery_3_top+(recovery_2_top-recovery_3_top)/2, x = 70, label = "Recovery III", size = annot_size/.pt) +
+  annotate("text", y = recovery_2_top+(recovery_1_top-recovery_2_top)/2, x = 70, label = "Recovery II", size = annot_size/.pt) +
+  annotate("text", y = recovery_1_top+(base_recovery-recovery_1_top)/2, x = 70, label = "Recovery I", size = annot_size/.pt) +
+  annotate("text", y = base_recovery+(base_clay-base_recovery)/2, x = 250, label = "Core", size = annot_size/.pt) +
+  geom_line(aes(linetype = Type, linewidth = ind)) +
+  scale_linewidth_manual(values = c("A" = lwd_med, "B" = lwd_env, "C" = lwd_env, "D" = lwd_med, "E" = lwd_env, "F" = lwd_env, "G" = lwd_med, "H" =  lwd_env, "I" = lwd_env), guide = "none") +
   scale_linetype_manual(values = c("B" = med_lty, "A" = env_lty), guide = "none") +
   xlab("Relative time since the beginning of PETM [kyr]") +
   ylab("Depth [m composite depth]") +
   ggtitle("Age-depth models for PETM at IODP Site 1266") +
-  scale_y_reverse()
+  scale_y_reverse() +
+  theme(legend.position = "bottom",
+        legend.title = element_blank(),
+        legend.text = element_text(size = legend_size),
+        axis.title = element_text(size = lab_size),
+        axis.text = element_text(size = ax_size),
+        plot.title = element_text(size = title_size))
 
-ggsave("figs/site1266_adm.png",
-       plot = last_plot(),
-       width = fig_width_cm,
-       dpi = dpi,
-       unit = "cm",
-       height = 10)
+save_thesis_fig("figs/site1266_adm.png", plot = adm_plot, height_cm = 12)
 
